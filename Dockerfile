@@ -1,4 +1,5 @@
 FROM richarvey/nginx-php-fpm:latest 
+ENV PHP_VERSION=8.2 
 COPY . /var/www/html 
 ENV WEB_DOCUMENT_ROOT=/var/www/html/public 
 ENV APP_BASE_DIR=/var/www/html 
