@@ -1,10 +1,7 @@
-FROM richarvey/nginx-php-fpm:latest 
-ENV PHP_VERSION=8.2 
-COPY . /var/www/html 
-ENV WEB_DOCUMENT_ROOT=/var/www/html/public 
-ENV APP_BASE_DIR=/var/www/html 
-ENV APP_ENV=production 
-ENV APP_DEBUG=false 
-RUN rm -f /var/www/html/index.php /var/www/html/index.html 
-RUN composer install --no-dev --prefer-dist --optimize-autoloader --ignore-platform-reqs 
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache 
+FROM php:8.2-cli 
+RUN docker-php-ext-install pdo_mysql mbstring gd 
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer 
+WORKDIR /var/www 
+COPY . . 
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs 
+CMD php artisan serve --host=0.0.0.0 --port=$PORT 
