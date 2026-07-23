@@ -1,4 +1,4 @@
-FROM php:8.2-cli
+FROM php:8.4-cli
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -21,7 +21,7 @@ WORKDIR /var/www
 
 COPY . .
 
-# Run Composer WITHOUT --ignore-platform-reqs
+# Run Composer installation matching PHP 8.4
 RUN composer install --no-dev --optimize-autoloader
 
 # Set permissions
