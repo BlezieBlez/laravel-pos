@@ -15,7 +15,7 @@
             <!-- Brand Header -->
             <div class="px-2 py-4 mb-6 border-b border-slate-800 text-center">
                 <h1 class="font-extrabold text-xl text-amber-400 tracking-wide uppercase">Original Digman</h1>
-                <p class="text-xs text-slate-400 mt-1">Halo-Halo & Siopao</p>
+                <p class="text-xs text-slate-400 mt-1">Halo-Halo & Home Made Siopao</p>
             </div>
 
             <!-- Nav Links -->
