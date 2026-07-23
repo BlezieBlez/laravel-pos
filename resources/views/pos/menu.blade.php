@@ -3,598 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Original Digman Halo-Halo POS</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { display: flex; height: 100vh; background-color: #2e2d32; color: #fff; overflow: hidden; }
-
-        /* Left Navigation Panel */
-        .side-nav {
-            width: 130px;
-            background-color: #1f1e24;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
-            gap: 25px;
-            border-right: 1px solid #333;
-        }
-
-        .side-nav .nav-title {
-            color: #aaa;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .side-nav a {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 90px;
-            height: 80px;
-            text-decoration: none;
-            color: #fff;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: bold;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .side-nav a .icon-box {
-            width: 36px;
-            height: 36px;
-            background: #3e3b47;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .side-nav a.active {
-            background-color: #6a1b9a;
-        }
-
-        .side-nav a.active .icon-box {
-            background: #ffffff;
-            color: #6a1b9a;
-        }
-
-        /* Right Container Layout */
-        .app-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Top Header Banner - Increased Size */
-        .top-header-bar {
-            height: 110px; /* Increased height from 75px */
-            background-color: #e5e5e5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 2px solid #ccc;
-            padding: 10px;
-        }
-
-        .top-header-bar img {
-            max-height: 90px; /* Increased logo max height from 55px */
-            width: auto;
-            object-fit: contain;
-        }
-
-        /* Main Workspace Area */
-        .workspace {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-        }
-
-        /* Menu Grid Section */
-        .menu-section {
-            flex: 1;
-            background-color: #5c5760;
-            padding: 20px 30px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* Categories Bar */
-        .category-tabs {
-            display: flex;
-            gap: 30px;
-            border-bottom: 1px solid #77727c;
-            padding-bottom: 10px;
-        }
-
-        .cat-tab {
-            background: none;
-            border: none;
-            color: #ddd;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            padding-bottom: 5px;
-        }
-
-        .cat-tab.active {
-            color: #ffd600;
-            border-bottom: 3px solid #ffd600;
-        }
-
-        /* Products Grid */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .product-card {
-            background-color: #e3e3e3;
-            border-radius: 6px;
-            padding: 10px;
-            color: #000;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .product-image {
-            width: 100%;
-            height: 130px;
-            background-color: #7d7d7d;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-weight: bold;
-            font-size: 14px;
-            border-radius: 4px;
-        }
-
-        .product-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .product-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #4a148c;
-        }
-
-        .product-price {
-            font-size: 13px;
-            font-weight: bold;
-            color: #4a148c;
-        }
-
-        .product-qty-control {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .product-qty-control button {
-            background: none;
-            border: none;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 0 4px;
-        }
-
-        /* Sidebar Cart Section */
-        .cart-section {
-            width: 360px;
-            background-color: #e5e5e5;
-            color: #000;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            border-left: 2px solid #ccc;
-        }
-
-        .order-type-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #d1d1d1;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            color: #333;
-            cursor: pointer;
-            text-align: left;
-            font-size: 14px;
-        }
-
-        .table-input {
-            width: 100%;
-            padding: 10px;
-            background-color: #d1d1d1;
-            border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            color: #555;
-            outline: none;
-        }
-
-        .order-details-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        .order-items-list {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 10px;
-        }
-
-        .order-item-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .summary-totals {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .cash-input-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #d1d1d1;
-            padding: 6px 12px;
-            border-radius: 4px;
-        }
-
-        .cash-input-row input {
-            background: transparent;
-            border: none;
-            outline: none;
-            font-weight: bold;
-            font-size: 14px;
-            width: 100px;
-            text-align: right;
-        }
-
-        /* Numpad Keypad */
-        .keypad-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .keypad-btn {
-            padding: 14px 0;
-            background-color: #d1d1d1;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #000;
-        }
-
-        .keypad-btn.action-cancel { background-color: #90caf9; color: #000; }
-        .keypad-btn.action-delete { background-color: #ff8a80; color: #000; }
-        .keypad-btn.action-checkout { background-color: #a5d6a7; color: #000; grid-column: span 1; }
-
-        /* Mobile & Small Tablet Adjustments */
-        @media (max-width: 900px) {
-            body {
-                flex-direction: column; /* Stack side navigation on top or bottom */
-                overflow-y: auto;
-            }
-
-            .side-nav {
-                width: 100%;
-                height: 60px;
-                flex-direction: row;
-                justify-content: space-around;
-                padding-top: 0;
-                border-right: none;
-                border-bottom: 1px solid #333;
-            }
-
-            .side-nav a {
-                width: auto;
-                height: 50px;
-                flex-direction: row;
-            }
-
-            .workspace {
-                flex-direction: column; /* Stack Menu and Cart vertically */
-            }
-
-            .cart-section {
-                width: 100%; /* Full width cart on mobile */
-                border-left: none;
-                border-top: 2px solid #ccc;
-            }
-
-            .top-header-bar {
-                height: 70px; /* Reduce banner size on phones */
-            }
-
-            .top-header-bar img {
-                max-height: 50px;
-            }
-        }
-    </style>
+    <title>POS Menu - Original Digman Halo-Halo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-slate-100 font-sans antialiased text-slate-800 h-screen flex overflow-hidden">
 
-    <!-- LEFT SIDE NAVIGATION -->
-    <nav class="side-nav">
-        <span class="nav-title">Navigation</span>
-        <a href="/menu" class="active">
-            <div class="icon-box">::</div>
-            MENU
-        </a>
-        <a href="/kitchen">
-            <div class="icon-box">::</div>
-            KITCHEN
-        </a>
-        <a href="/dashboard">
-            <div class="icon-box">::</div>
-            DASHBOARD
-        </a>
-    </nav>
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between p-4 shadow-xl">
+        <div>
+            <!-- Brand Header -->
+            <div class="px-2 py-4 mb-6 border-b border-slate-800 text-center">
+                <h1 class="font-extrabold text-xl text-amber-400 tracking-wide uppercase">Original Digman</h1>
+                <p class="text-xs text-slate-400 mt-1">Halo-Halo & Siopao</p>
+            </div>
 
-    <!-- RIGHT CONTAINER -->
-    <div class="app-container">
+            <!-- Nav Links -->
+            <nav class="space-y-2">
+                <a href="/menu" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-purple-600 text-white font-semibold shadow-md transition">
+                    <i class="fa-solid fa-utensils text-lg"></i>
+                    <span>Menu / Order</span>
+                </a>
+                <a href="/kitchen" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium transition">
+                    <i class="fa-solid fa-kitchen-set text-lg"></i>
+                    <span>Kitchen Queue</span>
+                </a>
+                <a href="/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium transition">
+                    <i class="fa-solid fa-chart-line text-lg"></i>
+                    <span>Dashboard</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Footer / Status -->
+        <div class="p-3 bg-slate-800/60 rounded-lg text-xs text-slate-400 flex items-center justify-between">
+            <span>Status: <strong class="text-emerald-400">Online</strong></span>
+            <i class="fa-solid fa-circle text-emerald-400 text-[10px]"></i>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex overflow-hidden">
         
-        <!-- TOP BANNER -->
-        <div class="top-header-bar">
-            <img src="{{ asset('images/header-banner.png') }}" alt="Original Digman Halo-Halo and Home Made Siopao">
-        </div>
-
-        <!-- WORKSPACE AREA -->
-        <div class="workspace">
+        <!-- Left Section: Menu Items -->
+        <section class="flex-1 flex flex-col p-6 overflow-y-auto">
             
-            <!-- MENU PRODUCTS -->
-            <div class="menu-section">
-                <div class="category-tabs">
-                    <button class="cat-tab" onclick="filterCategory('Silog')">Silog Dishes</button>
-                    <button class="cat-tab" onclick="filterCategory('Noodles')">Noodle Dishes</button>
-                    <button class="cat-tab" onclick="filterCategory('Single')">Single Dishes</button>
-                    <button class="cat-tab active" onclick="filterCategory('Dessert')">Dessert</button>
-                </div>
-
-                <div class="products-grid" id="products-grid">
-                    <!-- Populated via Javascript -->
-                </div>
+            <!-- Category Navigation Bar -->
+            <div class="flex items-center gap-3 mb-6 overflow-x-auto pb-2">
+                <button class="px-5 py-2.5 rounded-full bg-purple-600 text-white font-semibold shadow-sm hover:bg-purple-700 transition whitespace-nowrap">
+                    Dessert
+                </button>
+                <button class="px-5 py-2.5 rounded-full bg-white text-slate-600 font-medium hover:bg-slate-200 transition shadow-sm border border-slate-200 whitespace-nowrap">
+                    Silog Dishes
+                </button>
+                <button class="px-5 py-2.5 rounded-full bg-white text-slate-600 font-medium hover:bg-slate-200 transition shadow-sm border border-slate-200 whitespace-nowrap">
+                    Noodle Dishes
+                </button>
+                <button class="px-5 py-2.5 rounded-full bg-white text-slate-600 font-medium hover:bg-slate-200 transition shadow-sm border border-slate-200 whitespace-nowrap">
+                    Single Dishes
+                </button>
             </div>
 
-            <!-- CART / ORDER DETAILS -->
-            <div class="cart-section">
-                <button class="order-type-btn" id="order-type-toggle" onclick="toggleOrderType()">Take Out</button>
-                <input type="text" class="table-input" placeholder="Table Number" id="table-num">
-
-                <div class="order-details-title">Order Details</div>
-
-                <div class="order-items-list" id="cart-list">
-                    <!-- Items rendered here -->
-                </div>
-
-                <div class="summary-totals">
-                    <div class="summary-row"><span>Sub Total:</span><span id="subtotal">₱0.00</span></div>
-                    <div class="summary-row"><span>Total:</span><span id="total">₱0.00</span></div>
-                    <div class="cash-input-row">
-                        <span>Cash:</span>
-                        <input type="text" id="cash-input" placeholder="₱0.00" readonly>
-                    </div>
-                </div>
-
-                <!-- KEYPAD -->
-                <div class="keypad-grid">
-                    <button class="keypad-btn" onclick="pressKey('1')">1</button>
-                    <button class="keypad-btn" onclick="pressKey('2')">2</button>
-                    <button class="keypad-btn" onclick="pressKey('3')">3</button>
-                    <button class="keypad-btn action-cancel" onclick="clearCart()">Cancel</button>
-
-                    <button class="keypad-btn" onclick="pressKey('4')">4</button>
-                    <button class="keypad-btn" onclick="pressKey('5')">5</button>
-                    <button class="keypad-btn" onclick="pressKey('6')">6</button>
-                    <button class="keypad-btn action-delete" onclick="pressKey('DEL')">Delete</button>
-
-                    <button class="keypad-btn" onclick="pressKey('7')">7</button>
-                    <button class="keypad-btn" onclick="pressKey('8')">8</button>
-                    <button class="keypad-btn" onclick="pressKey('9')">9</button>
-                    <button class="keypad-btn action-checkout" onclick="checkout()">Checkout</button>
-
-                    <button class="keypad-btn" onclick="pressKey('0')">0</button>
-                    <button class="keypad-btn" onclick="pressKey('00')">00</button>
-                    <button class="keypad-btn" onclick="pressKey('.')">.</button>
-                    <button class="keypad-btn" onclick="pressKey('000')">000</button>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-    <script>
-        const catalog = [
-            { id: 1, name: 'Halo-Halo', category: 'Dessert', price: 90, prep_time: 180 },
-            { id: 2, name: 'Halo-Halo Special', category: 'Dessert', price: 120, prep_time: 240 },
-            { id: 3, name: 'Mais Con Yelo', category: 'Dessert', price: 90, prep_time: 120 }
-        ];
-
-        let selectedOrderType = 'Take Out';
-        let cart = JSON.parse(localStorage.getItem('pos_cart')) || [];
-        let cashInputValue = '';
-
-        renderMenu('Dessert');
-        renderCart();
-
-        function toggleOrderType() {
-            selectedOrderType = selectedOrderType === 'Take Out' ? 'Dine-In' : 'Take Out';
-            document.getElementById('order-type-toggle').innerText = selectedOrderType;
-        }
-
-        function filterCategory(cat) {
-            document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            renderMenu(cat);
-        }
-
-        function renderMenu(category) {
-            const grid = document.getElementById('products-grid');
-            grid.innerHTML = '';
-            
-            const filtered = catalog.filter(i => i.category === category);
-
-            filtered.forEach(item => {
-                const inCart = cart.find(c => c.name === item.name);
-                const qty = inCart ? inCart.quantity : 0;
-
-                grid.innerHTML += `
-                    <div class="product-card" onclick="addToCart('${item.name}', ${item.price}, ${item.prep_time})">
-                        <div class="product-image">IMAGE HERE</div>
-                        <div class="product-info">
-                            <div>
-                                <div class="product-title">${item.name}</div>
-                                <div class="product-price">₱${item.price}</div>
-                            </div>
-                            <div class="product-qty-control">
-                                <button onclick="event.stopPropagation(); updateQuantityByName('${item.name}', 1)">+</button>
-                                <span>${qty}</span>
-                                <button onclick="event.stopPropagation(); updateQuantityByName('${item.name}', -1)">-</button>
-                            </div>
+            <!-- Food Items Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Item Card 1 -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+                    <div>
+                        <div class="w-full h-40 bg-slate-100 rounded-xl mb-3 flex items-center justify-center text-slate-400 overflow-hidden">
+                            <i class="fa-solid fa-bowl-food text-4xl"></i>
                         </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Halo-Halo</h3>
+                        <p class="text-purple-600 font-extrabold text-xl mt-1">₱90.00</p>
                     </div>
-                `;
-            });
-        }
-
-        function addToCart(name, price, prepTime) {
-            let existing = cart.find(i => i.name === name);
-            if (existing) {
-                existing.quantity += 1;
-            } else {
-                cart.push({ name: name, price: price, quantity: 1, prep_time_seconds: prepTime });
-            }
-            saveCart();
-        }
-
-        function updateQuantityByName(name, change) {
-            let existing = cart.find(i => i.name === name);
-            if (existing) {
-                existing.quantity += change;
-                if (existing.quantity <= 0) {
-                    cart = cart.filter(i => i.name !== name);
-                }
-                saveCart();
-            }
-        }
-
-        function saveCart() {
-            localStorage.setItem('pos_cart', JSON.stringify(cart));
-            renderCart();
-            renderMenu('Dessert');
-        }
-
-        function clearCart() {
-            cart = [];
-            cashInputValue = '';
-            document.getElementById('cash-input').value = '';
-            localStorage.removeItem('pos_cart');
-            renderCart();
-            renderMenu('Dessert');
-        }
-
-        function renderCart() {
-            const list = document.getElementById('cart-list');
-            list.innerHTML = '';
-            let subtotal = 0;
-
-            cart.forEach(item => {
-                let total = item.price * item.quantity;
-                subtotal += total;
-                list.innerHTML += `
-                    <div class="order-item-row">
-                        <span>${item.quantity}x ${item.name}</span>
-                        <span>₱${total}</span>
+                    <!-- Touch-friendly Quantity Selector -->
+                    <div class="flex items-center justify-between mt-4 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+                        <button class="w-10 h-10 rounded-lg bg-white shadow-sm border border-slate-200 text-slate-700 font-bold text-lg flex items-center justify-center hover:bg-slate-100 active:scale-95 transition">-</button>
+                        <span class="font-bold text-slate-800 text-lg">0</span>
+                        <button class="w-10 h-10 rounded-lg bg-purple-600 shadow-sm text-white font-bold text-lg flex items-center justify-center hover:bg-purple-700 active:scale-95 transition">+</button>
                     </div>
-                `;
-            });
+                </div>
 
-            document.getElementById('subtotal').innerText = `₱${subtotal.toFixed(2)}`;
-            document.getElementById('total').innerText = `₱${subtotal.toFixed(2)}`;
-        }
+                <!-- Item Card 2 -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+                    <div>
+                        <div class="w-full h-40 bg-slate-100 rounded-xl mb-3 flex items-center justify-center text-slate-400 overflow-hidden">
+                            <i class="fa-solid fa-ice-cream text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Halo-Halo Special</h3>
+                        <p class="text-purple-600 font-extrabold text-xl mt-1">₱120.00</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-4 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+                        <button class="w-10 h-10 rounded-lg bg-white shadow-sm border border-slate-200 text-slate-700 font-bold text-lg flex items-center justify-center hover:bg-slate-100 active:scale-95 transition">-</button>
+                        <span class="font-bold text-slate-800 text-lg">0</span>
+                        <button class="w-10 h-10 rounded-lg bg-purple-600 shadow-sm text-white font-bold text-lg flex items-center justify-center hover:bg-purple-700 active:scale-95 transition">+</button>
+                    </div>
+                </div>
 
-        function pressKey(key) {
-            if (key === 'DEL') {
-                cashInputValue = cashInputValue.slice(0, -1);
-            } else {
-                cashInputValue += key;
-            }
-            document.getElementById('cash-input').value = cashInputValue ? `₱${cashInputValue}` : '';
-        }
+                <!-- Item Card 3 -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:shadow-md transition">
+                    <div>
+                        <div class="w-full h-40 bg-slate-100 rounded-xl mb-3 flex items-center justify-center text-slate-400 overflow-hidden">
+                            <i class="fa-solid fa-glass-water text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Mais Con Yelo</h3>
+                        <p class="text-purple-600 font-extrabold text-xl mt-1">₱90.00</p>
+                    </div>
+                    <div class="flex items-center justify-between mt-4 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+                        <button class="w-10 h-10 rounded-lg bg-white shadow-sm border border-slate-200 text-slate-700 font-bold text-lg flex items-center justify-center hover:bg-slate-100 active:scale-95 transition">-</button>
+                        <span class="font-bold text-slate-800 text-lg">0</span>
+                        <button class="w-10 h-10 rounded-lg bg-purple-600 shadow-sm text-white font-bold text-lg flex items-center justify-center hover:bg-purple-700 active:scale-95 transition">+</button>
+                    </div>
+                </div>
 
-        function checkout() {
-            if (cart.length === 0) return alert('Cart is empty!');
-            const total = parseFloat(document.getElementById('total').innerText.replace('₱', ''));
-            const cash = parseFloat(cashInputValue);
+            </div>
+        </section>
 
-            if (!cash || cash < total) {
-                return alert('Please enter sufficient cash tendered!');
-            }
+        <!-- Right Section: Order Summary & Cashier Keypad -->
+        <aside class="w-96 bg-white border-l border-slate-200 flex flex-col justify-between p-6 shadow-lg">
+            <div>
+                <!-- Order Type Options -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <button class="py-2.5 rounded-xl border-2 border-purple-600 bg-purple-50 text-purple-700 font-bold text-sm">Take Out</button>
+                    <button class="py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 font-semibold text-sm hover:bg-slate-50">Dine In</button>
+                </div>
 
-            fetch('/api/orders/store', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}' 
-                },
-                body: JSON.stringify({
-                    order_type: selectedOrderType,
-                    table_number: document.getElementById('table-num').value,
-                    items: cart,
-                    subtotal: total,
-                    total: total,
-                    cash: cash
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.success) {
-                    alert(`Order ${data.order_number} processed!\nChange: ₱${(cash - total).toFixed(2)}`);
-                    clearCart();
-                }
-            });
-        }
-    </script>
+                <input type="text" placeholder="Table Number / Customer Name" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 mb-6">
+
+                <!-- Order Totals -->
+                <h2 class="font-bold text-slate-800 text-lg mb-3 border-b border-slate-100 pb-2">Order Details</h2>
+                <div class="space-y-2 text-sm text-slate-600 mb-4">
+                    <div class="flex justify-between">
+                        <span>Sub Total:</span>
+                        <span class="font-semibold text-slate-800">₱0.00</span>
+                    </div>
+                    <div class="flex justify-between text-base font-bold text-slate-900 border-t border-slate-100 pt-2">
+                        <span>Total:</span>
+                        <span class="text-purple-600 text-xl">₱0.00</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200 mt-2">
+                        <span class="font-medium text-slate-700">Cash Rendered:</span>
+                        <span class="font-mono font-extrabold text-slate-900 text-lg">₱0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tactile Cashier Keypad -->
+            <div>
+                <div class="grid grid-cols-4 gap-2 mb-3">
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">1</button>
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">2</button>
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">3</button>
+                    <button class="h-12 rounded-xl bg-sky-100 text-sky-700 font-bold text-sm hover:bg-sky-200 active:bg-sky-300">Cancel</button>
+
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">4</button>
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">5</button>
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">6</button>
+                    <button class="h-12 rounded-xl bg-rose-100 text-rose-700 font-bold text-sm hover:bg-rose-200 active:bg-rose-300">Delete</button>
+
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">7</button>
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">8</button>
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">9</button>
+                    
+                    <!-- Primary Action Button -->
+                    <button class="row-span-2 h-full rounded-xl bg-emerald-600 text-white font-extrabold text-sm shadow-md hover:bg-emerald-700 active:bg-emerald-800 flex flex-col items-center justify-center gap-1">
+                        <i class="fa-solid fa-check text-lg"></i>
+                        <span>Checkout</span>
+                    </button>
+
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">0</button>
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">00</button>
+                    <button class="h-12 rounded-xl bg-slate-100 font-bold text-slate-800 text-lg hover:bg-slate-200 active:bg-slate-300">.</button>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
 </body>
 </html>
