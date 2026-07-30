@@ -56,12 +56,12 @@
                 </div>
 
                 <!-- Category Navigation Tabs -->
-                <div class="flex items-center justify-around gap-2 mb-4 overflow-x-auto pb-1 text-sm font-semibold text-slate-300 border-b border-slate-600/50">
-                    <button class="pb-2 px-3 hover:text-white transition whitespace-nowrap">Silog Dishes</button>
-                    <button class="pb-2 px-3 hover:text-white transition whitespace-nowrap">Noodle Dishes</button>
-                    <button class="pb-2 px-3 hover:text-white transition whitespace-nowrap">Single Dishes</button>
-                    <button class="pb-2 px-3 text-amber-300 font-extrabold border-b-2 border-amber-300 whitespace-nowrap">Dessert</button>
-                </div>
+                <div class="flex items-center justify-around gap-2 mb-4 overflow-x-auto pb-1 text-sm font-semibold text-slate-600 border-b border-slate-300">
+                    <button class="pb-2 px-3 hover:text-slate-900 transition whitespace-nowrap">Silog Dishes</button>
+                    <button class="pb-2 px-3 hover:text-slate-900 transition whitespace-nowrap">Noodle Dishes</button>
+                    <button class="pb-2 px-3 hover:text-slate-900 transition whitespace-nowrap">Single Dishes</button>
+                    <button class="pb-2 px-3 text-amber-600 font-extrabold border-b-2 border-amber-600 whitespace-nowrap">Dessert</button>
+                </div> 
 
                 <!-- Food Items Grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -69,7 +69,7 @@
                     <!-- Item Card 1 -->
                     <div class="bg-[#dcd8d8] rounded-lg p-3 shadow-md flex flex-col justify-between border border-slate-300">
                         <div>
-                            <div class="w-full h-36 bg-[#8c888c] rounded flex items-center justify-center text-slate-200 font-bold text-sm mb-2 shadow-inner">
+                            <div class="w-full h-36 bg-slate-700 rounded flex items-center justify-center text-white font-bold text-sm mb-2 shadow-inner">
                                 IMAGE HERE
                             </div>
                             <h3 class="font-extrabold text-slate-900 text-sm">Halo-Halo</h3>
@@ -85,7 +85,7 @@
                     <!-- Item Card 2 -->
                     <div class="bg-[#dcd8d8] rounded-lg p-3 shadow-md flex flex-col justify-between border border-slate-300">
                         <div>
-                            <div class="w-full h-36 bg-[#8c888c] rounded flex items-center justify-center text-slate-200 font-bold text-sm mb-2 shadow-inner">
+                            <div class="w-full h-36 bg-slate-700 rounded flex items-center justify-center text-white font-bold text-sm mb-2 shadow-inner">
                                 IMAGE HERE
                             </div>
                             <h3 class="font-extrabold text-slate-900 text-sm">Halo-Halo Special</h3>
