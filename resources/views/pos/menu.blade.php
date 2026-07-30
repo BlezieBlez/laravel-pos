@@ -51,7 +51,7 @@
             <section class="flex-1 flex flex-col p-4 overflow-y-auto">
                 
                 <!-- Brand Header Banner Image -->
-                <div class="bg-[#1e1b24] rounded-xl py-2 px-4 mb-4 text-center shadow-md border border-slate-700/60 flex items-center justify-center overflow-hidden">
+                <div class="bg-[#4a444a] rounded-xl py-2 px-4 mb-4 text-center shadow-md border border-slate-700/60 flex items-center justify-center overflow-hidden">
                     <img src="{{ asset('images/header-banner.png') }}" alt="Original Digman Halo-Halo Banner" class="max-h-16 w-auto object-contain">
                 </div>
 
