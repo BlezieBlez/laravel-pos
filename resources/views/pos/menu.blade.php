@@ -9,49 +9,18 @@
 </head>
 <body class="bg-[#cac4c4] font-sans antialiased text-slate-800 min-h-screen lg:h-screen flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden p-2 lg:p-4">
 
-    <!-- Container Frame matching Figma -->
-    <div class="w-full h-full flex flex-col lg:flex-row bg-[#4a444a] rounded-xl overflow-hidden shadow-2xl border border-slate-700">
+    <!-- Container Frame -->
+    <div class="w-full h-full flex flex-col lg:flex-row bg-slate-100 rounded-xl overflow-hidden shadow-2xl border border-slate-300">
 
-        <!-- Sidebar Navigation -->
-        <aside class="w-full lg:w-44 bg-[#211e2b] text-white flex flex-col justify-between p-3 shrink-0 border-r border-slate-700/50">
-            <div>
-                <div class="py-2 mb-4 text-center border-b border-slate-800">
-                    <span class="text-xs font-bold tracking-widest text-slate-400 uppercase">Navigation</span>
-                </div>
-
-                <nav class="flex lg:flex-col justify-center gap-4 overflow-x-auto">
-                    <a href="/menu" class="flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-[#712bb1] text-white font-bold text-xs shadow-lg transition transform hover:scale-105 shrink-0 mx-auto">
-                        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center mb-1">
-                            <i class="fa-solid fa-utensils text-sm"></i>
-                        </div>
-                        <span>MENU</span>
-                    </a>
-
-                    <a href="/kitchen" class="flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-[#322a40] hover:bg-[#712bb1] text-slate-300 hover:text-white font-bold text-xs transition transform hover:scale-105 shrink-0 mx-auto">
-                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-1">
-                            <i class="fa-solid fa-kitchen-set text-sm"></i>
-                        </div>
-                        <span>KITCHEN</span>
-                    </a>
-
-                    <a href="/dashboard" class="flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-[#322a40] hover:bg-[#712bb1] text-slate-300 hover:text-white font-bold text-xs transition transform hover:scale-105 shrink-0 mx-auto">
-                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-1">
-                            <i class="fa-solid fa-chart-line text-sm"></i>
-                        </div>
-                        <span>DASHBOARD</span>
-                    </a>
-                </nav>
-            </div>
-        </aside>
-
+        @include('pos.partials.sidebar')
         <!-- Main Workspace -->
-        <main class="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden bg-[#4a444a]">
+        <main class="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden bg-slate-100">
 
             <!-- Center Content Area -->
             <section class="flex-1 flex flex-col p-4 overflow-y-auto">
                 
                 <!-- Brand Header Banner Image -->
-                <div class="bg-[#1e1b24] rounded-xl py-2 px-4 mb-4 text-center shadow-md border border-slate-700/60 flex items-center justify-center overflow-hidden">
+                <div class="bg-[#dcd8d8] rounded-xl py-2 px-4 mb-4 text-center shadow-md border border-slate-700/60 flex items-center justify-center overflow-hidden">
                     <img src="{{ asset('images/header-banner.png') }}" alt="Original Digman Banner" class="max-h-16 w-auto object-contain">
                 </div>
 
@@ -128,17 +97,15 @@
                     <input type="text" placeholder="Table Number" class="w-full p-2 rounded bg-[#dcd8d8] border border-slate-300 text-slate-700 text-xs mb-4 focus:outline-none">
 
                     <h2 class="font-bold text-slate-900 text-sm mb-2 border-b border-slate-300 pb-1">Order Details</h2>
+                    
+                    <!-- Clean empty summary list -->
                     <div id="order-summary-list" class="space-y-1 text-xs text-slate-800 font-medium mb-4 min-h-[60px]">
-                        <div class="flex justify-between">
-                            <span>10x Halo-Halo</span>
-                            <span>P900</span>
-                        </div>
                     </div>
 
                     <div class="space-y-1 text-xs text-slate-800 font-semibold border-t border-slate-300 pt-2 mb-3">
                         <div class="flex justify-between">
                             <span>Sub Total:</span>
-                            <span id="subtotal">P900</span>
+                            <span id="subtotal">P0</span>
                         </div>
                         <div class="flex justify-between">
                             <span>Discount:</span>
@@ -146,7 +113,7 @@
                         </div>
                         <div class="flex justify-between font-extrabold text-slate-900 text-sm pt-1">
                             <span>Total:</span>
-                            <span id="total">P900</span>
+                            <span id="total">P0</span>
                         </div>
                         <div class="flex justify-between items-center pt-1">
                             <span>Cash:</span>
@@ -200,10 +167,20 @@
 
         function recalculateTotals() {
             const prices = {'halo-1': 90, 'halo-2': 120, 'halo-3': 90};
+            const names = {'halo-1': 'Halo-Halo', 'halo-2': 'Halo-Halo Special', 'halo-3': 'Mais Con Yelo'};
+            
             let total = 0;
+            let summaryHtml = '';
+
             for (let id in quantities) {
-                total += quantities[id] * (prices[id] || 0);
+                if (quantities[id] > 0) {
+                    let itemTotal = quantities[id] * prices[id];
+                    total += itemTotal;
+                    summaryHtml += `<div class="flex justify-between"><span>${quantities[id]}x ${names[id]}</span><span>P${itemTotal}</span></div>`;
+                }
             }
+
+            document.getElementById('order-summary-list').innerHTML = summaryHtml;
             document.getElementById('subtotal').innerText = `P${total}`;
             document.getElementById('total').innerText = `P${total}`;
         }
