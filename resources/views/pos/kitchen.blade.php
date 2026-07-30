@@ -3,207 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kitchen Queue - Original Digman</title>
+    <title>POS Kitchen - Original Digman</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-100 font-sans antialiased text-slate-800 min-h-screen lg:h-screen flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
+<body class="bg-[#cac4c4] font-sans antialiased text-slate-800 min-h-screen lg:h-screen flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden p-2 lg:p-4">
 
-    <!-- Sidebar Navigation -->
-    <aside class="w-full lg:w-64 bg-slate-900 text-white flex flex-col justify-between p-4 shadow-xl shrink-0">
-        <div>
-            <!-- Brand Header -->
-            <div class="px-2 py-3 lg:py-4 mb-3 lg:mb-6 border-b border-slate-800 text-center">
-                <h1 class="font-extrabold text-lg lg:text-xl text-amber-400 tracking-wide uppercase">Original Digman</h1>
-                <p class="text-xs text-slate-400 mt-0.5">Halo-Halo & Siopao</p>
-            </div>
+    <!-- Container Frame matching Figma -->
+    <div class="w-full h-full flex flex-col lg:flex-row bg-[#4a444a] rounded-xl overflow-hidden shadow-2xl border border-slate-700">
 
-            <!-- Nav Links -->
-            <nav class="flex lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0">
-                <a href="/menu" class="flex-1 lg:flex-none flex items-center justify-center lg:justify-start gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium transition whitespace-nowrap">
-                    <i class="fa-solid fa-utensils text-lg"></i>
-                    <span>Menu / Order</span>
-                </a>
-                <a href="/kitchen" class="flex-1 lg:flex-none flex items-center justify-center lg:justify-start gap-3 px-4 py-3 rounded-xl bg-purple-600 text-white font-semibold shadow-md whitespace-nowrap">
-                    <i class="fa-solid fa-kitchen-set text-lg"></i>
-                    <span>Kitchen Queue</span>
-                </a>
-                <a href="/dashboard" class="flex-1 lg:flex-none flex items-center justify-center lg:justify-start gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium transition whitespace-nowrap">
-                    <i class="fa-solid fa-chart-line text-lg"></i>
-                    <span>Dashboard</span>
-                </a>
-            </nav>
-        </div>
-
-        <!-- Status Bar -->
-        <div class="hidden lg:flex p-3 bg-slate-800/60 rounded-lg text-xs text-slate-400 items-center justify-between mt-4">
-            <span>Status: <strong class="text-emerald-400">Live Queue</strong></span>
-            <i class="fa-solid fa-circle text-emerald-400 text-[10px]"></i>
-        </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="flex-1 p-4 lg:p-6 overflow-y-auto w-full">
-        
-        <!-- Live Metrics Row -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mb-6">
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex items-center justify-between">
-                <div>
-                    <p class="text-xs lg:text-sm font-semibold text-slate-500 uppercase tracking-wider">Pending</p>
-                    <h2 id="metric-pending" class="text-2xl lg:text-3xl font-extrabold text-amber-500 mt-1">2</h2>
+        <!-- Sidebar Navigation -->
+        <aside class="w-full lg:w-44 bg-[#211e2b] text-white flex flex-col justify-between p-3 shrink-0 border-r border-slate-700/50">
+            <div>
+                <div class="py-2 mb-4 text-center border-b border-slate-800">
+                    <span class="text-xs font-bold tracking-widest text-slate-400 uppercase">Navigation</span>
                 </div>
-                <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl shrink-0">
-                    <i class="fa-solid fa-clock"></i>
-                </div>
-            </div>
 
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex items-center justify-between">
-                <div>
-                    <p class="text-xs lg:text-sm font-semibold text-slate-500 uppercase tracking-wider">Preparing</p>
-                    <h2 id="metric-preparing" class="text-2xl lg:text-3xl font-extrabold text-sky-500 mt-1">1</h2>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center text-xl shrink-0">
-                    <i class="fa-solid fa-fire-burner"></i>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex items-center justify-between">
-                <div>
-                    <p class="text-xs lg:text-sm font-semibold text-slate-500 uppercase tracking-wider">Completed Today</p>
-                    <h2 id="metric-completed" class="text-2xl lg:text-3xl font-extrabold text-emerald-500 mt-1">14</h2>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl shrink-0">
-                    <i class="fa-solid fa-circle-check"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold text-slate-800">Active Orders Queue</h2>
-            <span class="text-xs font-semibold text-slate-500 bg-slate-200 px-3 py-1 rounded-full">Auto-refresh Active</span>
-        </div>
-
-        <!-- Orders Grid -->
-        <div id="orders-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
-            
-            <!-- Order 1 -->
-            <div id="order-card-101" class="bg-white rounded-2xl border-2 border-amber-300 shadow-sm p-5 flex flex-col justify-between transition hover:shadow-md">
-                <div>
-                    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
-                        <div>
-                            <span class="font-extrabold text-lg text-slate-900">#ORD-101</span>
-                            <p class="text-xs text-slate-400">Take Out • Table --</p>
+                <nav class="flex lg:flex-col justify-center gap-4 overflow-x-auto">
+                    <a href="/menu" class="flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-[#322a40] hover:bg-[#712bb1] text-slate-300 hover:text-white font-bold text-xs transition transform hover:scale-105 shrink-0 mx-auto">
+                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-1">
+                            <i class="fa-solid fa-utensils text-sm"></i>
                         </div>
-                        <span id="badge-101" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">Pending</span>
-                    </div>
-                    <ul class="space-y-2 text-slate-700 font-medium text-sm">
-                        <li class="flex justify-between border-b border-slate-50 pb-1">
-                            <span>2x Special Halo-Halo</span>
-                            <span class="font-bold text-slate-900">₱240</span>
-                        </li>
-                        <li class="flex justify-between border-b border-slate-50 pb-1">
-                            <span>1x Asado Siopao</span>
-                            <span class="font-bold text-slate-900">₱45</span>
-                        </li>
-                    </ul>
+                        <span>MENU</span>
+                    </a>
+
+                    <a href="/kitchen" class="flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-[#712bb1] text-white font-bold text-xs shadow-lg transition transform hover:scale-105 shrink-0 mx-auto">
+                        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center mb-1">
+                            <i class="fa-solid fa-kitchen-set text-sm"></i>
+                        </div>
+                        <span>KITCHEN</span>
+                    </a>
+
+                    <a href="/dashboard" class="flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-[#322a40] hover:bg-[#712bb1] text-slate-300 hover:text-white font-bold text-xs transition transform hover:scale-105 shrink-0 mx-auto">
+                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-1">
+                            <i class="fa-solid fa-chart-line text-sm"></i>
+                        </div>
+                        <span>DASHBOARD</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="flex-1 flex flex-col p-4 overflow-y-auto bg-[#4a444a]">
+
+            <!-- Brand Header Banner Image -->
+            <div class="bg-[#1e1b24] rounded-xl py-2 px-4 mb-4 text-center shadow-md border border-slate-700/60 flex items-center justify-between">
+                <img src="{{ asset('images/header-banner.png') }}" alt="Original Digman Banner" class="max-h-12 w-auto object-contain">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 mr-2 animate-pulse"></span> 3 Pending Orders
+                    </span>
                 </div>
-                <div class="mt-6 pt-3 border-t border-slate-100">
-                    <button id="btn-101" onclick="advanceOrderStatus('101')" class="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm shadow-sm active:scale-95 transition cursor-pointer flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-fire-burner"></i>
-                        <span>Start Preparing</span>
+            </div>
+
+            <!-- Orders Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <!-- Kitchen Order Ticket 1 -->
+                <div class="bg-[#e0dede] rounded-xl p-4 shadow-lg border border-slate-400 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center border-b border-slate-300 pb-2 mb-3">
+                            <div>
+                                <h3 class="font-black text-slate-900 text-base">Order #101</h3>
+                                <p class="text-xs text-slate-600 font-semibold">Take Out • Table --</p>
+                            </div>
+                            <span class="px-2.5 py-1 rounded bg-amber-100 text-amber-800 font-extrabold text-xs border border-amber-300">
+                                Preparing
+                            </span>
+                        </div>
+
+                        <!-- Ticket Items -->
+                        <ul class="space-y-2 mb-4 text-xs font-semibold text-slate-800">
+                            <li class="flex justify-between items-center bg-[#dcd8d8] p-2 rounded border border-slate-300">
+                                <span><strong class="text-purple-800 font-extrabold">2x</strong> Halo-Halo Special</span>
+                                <span class="text-slate-500 text-[10px]">No Ube</span>
+                            </li>
+                            <li class="flex justify-between items-center bg-[#dcd8d8] p-2 rounded border border-slate-300">
+                                <span><strong class="text-purple-800 font-extrabold">1x</strong> Mais Con Yelo</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button class="w-full py-2 bg-[#38c172] hover:bg-emerald-600 text-white font-extrabold text-xs rounded shadow transition active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i> Mark as Ready
                     </button>
                 </div>
-            </div>
 
-            <!-- Order 2 -->
-            <div id="order-card-102" class="bg-white rounded-2xl border-2 border-sky-300 shadow-sm p-5 flex flex-col justify-between transition hover:shadow-md">
-                <div>
-                    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
-                        <div>
-                            <span class="font-extrabold text-lg text-slate-900">#ORD-102</span>
-                            <p class="text-xs text-slate-400">Dine In • Table 04</p>
+                <!-- Kitchen Order Ticket 2 -->
+                <div class="bg-[#e0dede] rounded-xl p-4 shadow-lg border border-slate-400 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center border-b border-slate-300 pb-2 mb-3">
+                            <div>
+                                <h3 class="font-black text-slate-900 text-base">Order #102</h3>
+                                <p class="text-xs text-slate-600 font-semibold">Dine In • Table 04</p>
+                            </div>
+                            <span class="px-2.5 py-1 rounded bg-amber-100 text-amber-800 font-extrabold text-xs border border-amber-300">
+                                Preparing
+                            </span>
                         </div>
-                        <span id="badge-102" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-700">Preparing</span>
+
+                        <!-- Ticket Items -->
+                        <ul class="space-y-2 mb-4 text-xs font-semibold text-slate-800">
+                            <li class="flex justify-between items-center bg-[#dcd8d8] p-2 rounded border border-slate-300">
+                                <span><strong class="text-purple-800 font-extrabold">1x</strong> Pancit Palabok</span>
+                            </li>
+                            <li class="flex justify-between items-center bg-[#dcd8d8] p-2 rounded border border-slate-300">
+                                <span><strong class="text-purple-800 font-extrabold">2x</strong> Pork Siomai</span>
+                            </li>
+                        </ul>
                     </div>
-                    <ul class="space-y-2 text-slate-700 font-medium text-sm">
-                        <li class="flex justify-between border-b border-slate-50 pb-1">
-                            <span>1x Pancit Canton</span>
-                            <span class="font-bold text-slate-900">₱110</span>
-                        </li>
-                        <li class="flex justify-between border-b border-slate-50 pb-1">
-                            <span>2x Mais Con Yelo</span>
-                            <span class="font-bold text-slate-900">₱180</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="mt-6 pt-3 border-t border-slate-100">
-                    <button id="btn-102" onclick="advanceOrderStatus('102')" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm active:scale-95 transition cursor-pointer flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>Mark Order Ready</span>
+
+                    <button class="w-full py-2 bg-[#38c172] hover:bg-emerald-600 text-white font-extrabold text-xs rounded shadow transition active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i> Mark as Ready
                     </button>
                 </div>
-            </div>
 
-        </div>
-    </main>
+                <!-- Kitchen Order Ticket 3 -->
+                <div class="bg-[#e0dede] rounded-xl p-4 shadow-lg border border-slate-400 flex flex-col justify-between opacity-80">
+                    <div>
+                        <div class="flex justify-between items-center border-b border-slate-300 pb-2 mb-3">
+                            <div>
+                                <h3 class="font-black text-slate-900 text-base">Order #100</h3>
+                                <p class="text-xs text-slate-600 font-semibold">Dine In • Table 01</p>
+                            </div>
+                            <span class="px-2.5 py-1 rounded bg-emerald-100 text-emerald-800 font-extrabold text-xs border border-emerald-300">
+                                Completed
+                            </span>
+                        </div>
 
-    <!-- JS Interactivity -->
-    <script>
-        const orderStates = {
-            '101': 'pending',
-            '102': 'preparing'
-        };
-
-        function advanceOrderStatus(orderId) {
-            const card = document.getElementById(`order-card-${orderId}`);
-            const badge = document.getElementById(`badge-${orderId}`);
-            const btn = document.getElementById(`btn-${orderId}`);
-
-            if (orderStates[orderId] === 'pending') {
-                // Move from Pending -> Preparing
-                orderStates[orderId] = 'preparing';
-                card.className = "bg-white rounded-2xl border-2 border-sky-300 shadow-sm p-5 flex flex-col justify-between transition hover:shadow-md";
-                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-700";
-                badge.innerText = "Preparing";
-                
-                btn.className = "w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm active:scale-95 transition cursor-pointer flex items-center justify-center gap-2";
-                btn.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>Mark Order Ready</span>`;
-            } else if (orderStates[orderId] === 'preparing') {
-                // Move from Preparing -> Completed (remove from active view)
-                orderStates[orderId] = 'completed';
-                card.style.opacity = '0';
-                card.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    card.remove();
-                    checkEmptyQueue();
-                }, 300);
-            }
-            
-            updateMetrics();
-        }
-
-        function updateMetrics() {
-            let pending = 0, preparing = 0;
-            for (let id in orderStates) {
-                if (orderStates[id] === 'pending') pending++;
-                if (orderStates[id] === 'preparing') preparing++;
-            }
-            document.getElementById('metric-pending').innerText = pending;
-            document.getElementById('metric-preparing').innerText = preparing;
-        }
-
-        function checkEmptyQueue() {
-            const container = document.getElementById('orders-container');
-            if (container.children.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full bg-white rounded-2xl p-12 text-center border border-slate-200">
-                        <i class="fa-solid fa-circle-check text-5xl text-emerald-400 mb-3"></i>
-                        <h3 class="text-lg font-bold text-slate-800">Queue is Clear!</h3>
-                        <p class="text-sm text-slate-500 mt-1">There are no active kitchen orders at the moment.</p>
+                        <!-- Ticket Items -->
+                        <ul class="space-y-2 mb-4 text-xs font-semibold text-slate-800">
+                            <li class="flex justify-between items-center bg-[#dcd8d8] p-2 rounded border border-slate-300 line-through text-slate-500">
+                                <span><strong>3x</strong> Halo-Halo</span>
+                            </li>
+                        </ul>
                     </div>
-                `;
-            }
-        }
-    </script>
+
+                    <button disabled class="w-full py-2 bg-slate-400 text-slate-200 font-bold text-xs rounded cursor-not-allowed">
+                        Served
+                    </button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
 </body>
 </html>

@@ -45,14 +45,14 @@
         </aside>
 
         <!-- Main Workspace -->
-        <main class="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden bg-[#D9D9D9]">
+        <main class="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden bg-[#4a444a]">
 
             <!-- Center Content Area -->
             <section class="flex-1 flex flex-col p-4 overflow-y-auto">
                 
                 <!-- Brand Header Banner Image -->
-                <div class="bg-[#D9D9D9] rounded-xl py-2 px-4 mb-4 text-center shadow-md border border-slate-700/60 flex items-center justify-center overflow-hidden">
-                    <img src="{{ asset('images/header-banner.png') }}" alt="Original Digman Halo-Halo Banner" class="max-h-16 w-auto object-contain">
+                <div class="bg-[#1e1b24] rounded-xl py-2 px-4 mb-4 text-center shadow-md border border-slate-700/60 flex items-center justify-center overflow-hidden">
+                    <img src="{{ asset('images/header-banner.png') }}" alt="Original Digman Banner" class="max-h-16 w-auto object-contain">
                 </div>
 
                 <!-- Category Navigation Tabs -->
@@ -61,7 +61,7 @@
                     <button class="pb-2 px-3 hover:text-slate-900 transition whitespace-nowrap">Noodle Dishes</button>
                     <button class="pb-2 px-3 hover:text-slate-900 transition whitespace-nowrap">Single Dishes</button>
                     <button class="pb-2 px-3 text-amber-600 font-extrabold border-b-2 border-amber-600 whitespace-nowrap">Dessert</button>
-                </div> 
+                </div>
 
                 <!-- Food Items Grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -75,10 +75,10 @@
                             <h3 class="font-extrabold text-slate-900 text-sm">Halo-Halo</h3>
                             <p class="text-purple-800 font-extrabold text-xs">P90</p>
                         </div>
-                        <div class="flex items-center justify-end gap-1 mt-2 bg-slate-200 p-1 rounded border border-slate-300 text-xs font-bold">
-                            <button onclick="updateQty('halo-1', -1)" class="px-1.5 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">-</button>
-                            <span id="qty-halo-1" class="px-2">0</span>
-                            <button onclick="updateQty('halo-1', 1)" class="px-1.5 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">+</button>
+                        <div class="flex items-center justify-center gap-2 mt-2 bg-slate-200 p-1.5 rounded border border-slate-300 text-xs font-bold">
+                            <button onclick="updateQty('halo-1', -1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">-</button>
+                            <span id="qty-halo-1" class="px-3">0</span>
+                            <button onclick="updateQty('halo-1', 1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">+</button>
                         </div>
                     </div>
 
@@ -91,26 +91,26 @@
                             <h3 class="font-extrabold text-slate-900 text-sm">Halo-Halo Special</h3>
                             <p class="text-purple-800 font-extrabold text-xs">P120</p>
                         </div>
-                        <div class="flex items-center justify-end gap-1 mt-2 bg-slate-200 p-1 rounded border border-slate-300 text-xs font-bold">
-                            <button onclick="updateQty('halo-2', -1)" class="px-1.5 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">-</button>
-                            <span id="qty-halo-2" class="px-2">0</span>
-                            <button onclick="updateQty('halo-2', 1)" class="px-1.5 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">+</button>
+                        <div class="flex items-center justify-center gap-2 mt-2 bg-slate-200 p-1.5 rounded border border-slate-300 text-xs font-bold">
+                            <button onclick="updateQty('halo-2', -1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">-</button>
+                            <span id="qty-halo-2" class="px-3">0</span>
+                            <button onclick="updateQty('halo-2', 1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">+</button>
                         </div>
                     </div>
 
                     <!-- Item Card 3 -->
                     <div class="bg-[#dcd8d8] rounded-lg p-3 shadow-md flex flex-col justify-between border border-slate-300">
                         <div>
-                            <div class="w-full h-36 bg-[#8c888c] rounded flex items-center justify-center text-slate-200 font-bold text-sm mb-2 shadow-inner">
+                            <div class="w-full h-36 bg-slate-700 rounded flex items-center justify-center text-white font-bold text-sm mb-2 shadow-inner">
                                 IMAGE HERE
                             </div>
                             <h3 class="font-extrabold text-slate-900 text-sm">Mais Con Yelo</h3>
                             <p class="text-purple-800 font-extrabold text-xs">P90</p>
                         </div>
-                        <div class="flex items-center justify-end gap-1 mt-2 bg-slate-200 p-1 rounded border border-slate-300 text-xs font-bold">
-                            <button onclick="updateQty('halo-3', -1)" class="px-1.5 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">-</button>
-                            <span id="qty-halo-3" class="px-2">0</span>
-                            <button onclick="updateQty('halo-3', 1)" class="px-1.5 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">+</button>
+                        <div class="flex items-center justify-center gap-2 mt-2 bg-slate-200 p-1.5 rounded border border-slate-300 text-xs font-bold">
+                            <button onclick="updateQty('halo-3', -1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">-</button>
+                            <span id="qty-halo-3" class="px-3">0</span>
+                            <button onclick="updateQty('halo-3', 1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">+</button>
                         </div>
                     </div>
 
@@ -187,9 +187,8 @@
         </main>
     </div>
 
-    <!-- JS Interactivity -->
     <script>
-        let quantities = {'halo-1': 10};
+        let quantities = {'halo-1': 0, 'halo-2': 0, 'halo-3': 0};
         let rawCash = '';
 
         function updateQty(itemId, change) {
