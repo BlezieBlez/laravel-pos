@@ -45,13 +45,13 @@
         </aside>
 
         <!-- Main Workspace -->
-        <main class="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden bg-[#4a444a]">
+        <main class="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden bg-[#D9D9D9]">
 
             <!-- Center Content Area -->
             <section class="flex-1 flex flex-col p-4 overflow-y-auto">
                 
                 <!-- Brand Header Banner Image -->
-                <div class="bg-[#4a444a] rounded-xl py-2 px-4 mb-4 text-center shadow-md border border-slate-700/60 flex items-center justify-center overflow-hidden">
+                <div class="bg-[#D9D9D9] rounded-xl py-2 px-4 mb-4 text-center shadow-md border border-slate-700/60 flex items-center justify-center overflow-hidden">
                     <img src="{{ asset('images/header-banner.png') }}" alt="Original Digman Halo-Halo Banner" class="max-h-16 w-auto object-contain">
                 </div>
 
