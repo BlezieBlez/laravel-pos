@@ -1,209 +1,337 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full overflow-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS Menu - Original Digman</title>
+    <title>POS Menu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#cac4c4] font-sans antialiased text-slate-800 min-h-screen lg:h-screen flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden p-2 lg:p-4">
-
-    <!-- Container Frame -->
+<body class="bg-[#cac4c4] font-sans antialiased text-slate-800 h-screen w-screen overflow-hidden p-2 lg:p-3 box-border">
     <div class="w-full h-full flex flex-col lg:flex-row bg-slate-100 rounded-xl overflow-hidden shadow-2xl border border-slate-300">
-
+        
         @include('pos.partials.sidebar')
+
         <!-- Main Workspace -->
-        <main class="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden bg-slate-100">
-
-            <!-- Center Content Area -->
-            <section class="flex-1 flex flex-col p-4 overflow-y-auto">
-                
-                <!-- Brand Header Banner Image -->
-                <div class="bg-[#dcd8d8] rounded-xl py-2 px-4 mb-4 text-center shadow-md border border-slate-700/60 flex items-center justify-center overflow-hidden">
-                    <img src="{{ asset('images/header-banner.png') }}" alt="Original Digman Banner" class="max-h-16 w-auto object-contain">
+        <main class="flex-1 flex flex-col p-3 lg:p-4 overflow-hidden h-full bg-slate-100">
+            
+            <!-- Brand Header Banner -->
+            <div class="bg-[#dcd8d8] rounded-xl py-2 px-4 mb-3 text-center shadow-md border border-slate-700/60 flex items-center justify-between shrink-0">
+                <img src="{{ asset('images/header-banner.png') }}" alt="Original Digman Banner" class="max-h-10 w-auto object-contain">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-extrabold text-slate-700 bg-slate-200/80 px-3 py-1 rounded-full border border-slate-300 shadow-sm">
+                        <i class="fa-solid fa-utensils mr-1"></i> Point of Sale
+                    </span>
                 </div>
+            </div>
 
-                <!-- Category Navigation Tabs -->
-                <div class="flex items-center justify-around gap-2 mb-4 overflow-x-auto pb-1 text-sm font-semibold text-slate-600 border-b border-slate-300">
-                    <button class="pb-2 px-3 hover:text-slate-900 transition whitespace-nowrap">Silog Dishes</button>
-                    <button class="pb-2 px-3 hover:text-slate-900 transition whitespace-nowrap">Noodle Dishes</button>
-                    <button class="pb-2 px-3 hover:text-slate-900 transition whitespace-nowrap">Single Dishes</button>
-                    <button class="pb-2 px-3 text-amber-600 font-extrabold border-b-2 border-amber-600 whitespace-nowrap">Dessert</button>
-                </div>
+            <!-- Category Navigation Bar -->
+            <div class="flex items-center gap-8 border-b border-slate-300 mb-3 px-2 pb-1 shrink-0 font-bold text-xs">
+                <button onclick="switchCategory('silog')" id="cat-silog" class="category-btn text-slate-600 hover:text-slate-900 pb-1 border-b-2 border-transparent transition">
+                    Silog Dishes
+                </button>
+                <button onclick="switchCategory('noodle')" id="cat-noodle" class="category-btn text-slate-600 hover:text-slate-900 pb-1 border-b-2 border-transparent transition">
+                    Noodle Dishes
+                </button>
+                <button onclick="switchCategory('single')" id="cat-single" class="category-btn text-slate-600 hover:text-slate-900 pb-1 border-b-2 border-transparent transition">
+                    Single Dishes
+                </button>
+                <button onclick="switchCategory('dessert')" id="cat-dessert" class="category-btn text-amber-600 border-b-2 border-amber-500 font-extrabold pb-1 transition">
+                    Dessert
+                </button>
+            </div>
 
-                <!-- Food Items Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    
-                    <!-- Item Card 1 -->
-                    <div class="bg-[#dcd8d8] rounded-lg p-3 shadow-md flex flex-col justify-between border border-slate-300">
-                        <div>
-                            <div class="w-full h-36 bg-slate-700 rounded flex items-center justify-center text-white font-bold text-sm mb-2 shadow-inner">
-                                IMAGE HERE
-                            </div>
-                            <h3 class="font-extrabold text-slate-900 text-sm">Halo-Halo</h3>
-                            <p class="text-purple-800 font-extrabold text-xs">P90</p>
+            <!-- Menu Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 overflow-y-auto">
+                <!-- Halo-Halo Card -->
+                <div class="bg-[#e0dede] p-3 rounded-xl shadow border border-slate-300 text-center flex flex-col justify-between items-center">
+                    <div class="w-full flex flex-col items-center">
+                        <div class="w-20 h-20 mb-2 rounded-lg overflow-hidden bg-slate-200 border border-slate-300 flex items-center justify-center shrink-0">
+                            <img src="{{ asset('images/halo-halo1.webp') }}" alt="Halo-Halo" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80'">
                         </div>
-                        <div class="flex items-center justify-center gap-2 mt-2 bg-slate-200 p-1.5 rounded border border-slate-300 text-xs font-bold">
-                            <button onclick="updateQty('halo-1', -1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">-</button>
-                            <span id="qty-halo-1" class="px-3">0</span>
-                            <button onclick="updateQty('halo-1', 1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">+</button>
-                        </div>
+                        <h3 class="font-extrabold text-slate-800 text-sm">Halo-Halo</h3>
+                        <p class="text-purple-800 font-extrabold text-xs my-0.5">P90.00</p>
                     </div>
-
-                    <!-- Item Card 2 -->
-                    <div class="bg-[#dcd8d8] rounded-lg p-3 shadow-md flex flex-col justify-between border border-slate-300">
-                        <div>
-                            <div class="w-full h-36 bg-slate-700 rounded flex items-center justify-center text-white font-bold text-sm mb-2 shadow-inner">
-                                IMAGE HERE
-                            </div>
-                            <h3 class="font-extrabold text-slate-900 text-sm">Halo-Halo Special</h3>
-                            <p class="text-purple-800 font-extrabold text-xs">P120</p>
-                        </div>
-                        <div class="flex items-center justify-center gap-2 mt-2 bg-slate-200 p-1.5 rounded border border-slate-300 text-xs font-bold">
-                            <button onclick="updateQty('halo-2', -1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">-</button>
-                            <span id="qty-halo-2" class="px-3">0</span>
-                            <button onclick="updateQty('halo-2', 1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">+</button>
-                        </div>
-                    </div>
-
-                    <!-- Item Card 3 -->
-                    <div class="bg-[#dcd8d8] rounded-lg p-3 shadow-md flex flex-col justify-between border border-slate-300">
-                        <div>
-                            <div class="w-full h-36 bg-slate-700 rounded flex items-center justify-center text-white font-bold text-sm mb-2 shadow-inner">
-                                IMAGE HERE
-                            </div>
-                            <h3 class="font-extrabold text-slate-900 text-sm">Mais Con Yelo</h3>
-                            <p class="text-purple-800 font-extrabold text-xs">P90</p>
-                        </div>
-                        <div class="flex items-center justify-center gap-2 mt-2 bg-slate-200 p-1.5 rounded border border-slate-300 text-xs font-bold">
-                            <button onclick="updateQty('halo-3', -1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">-</button>
-                            <span id="qty-halo-3" class="px-3">0</span>
-                            <button onclick="updateQty('halo-3', 1)" class="px-2 py-0.5 bg-white rounded border border-slate-400 hover:bg-slate-100 active:scale-95 transition">+</button>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- Right Cashier Panel -->
-            <aside class="w-full lg:w-80 bg-[#e0dede] p-4 flex flex-col justify-between shadow-xl shrink-0 border-t lg:border-t-0 lg:border-l border-slate-400">
-                <div>
-                    <select class="w-full p-2 rounded bg-[#dcd8d8] border border-slate-300 text-slate-800 font-semibold text-xs mb-2 focus:outline-none">
-                        <option>Take Out</option>
-                        <option>Dine In</option>
-                    </select>
-
-                    <input type="text" placeholder="Table Number" class="w-full p-2 rounded bg-[#dcd8d8] border border-slate-300 text-slate-700 text-xs mb-4 focus:outline-none">
-
-                    <h2 class="font-bold text-slate-900 text-sm mb-2 border-b border-slate-300 pb-1">Order Details</h2>
-                    
-                    <!-- Clean empty summary list -->
-                    <div id="order-summary-list" class="space-y-1 text-xs text-slate-800 font-medium mb-4 min-h-[60px]">
-                    </div>
-
-                    <div class="space-y-1 text-xs text-slate-800 font-semibold border-t border-slate-300 pt-2 mb-3">
-                        <div class="flex justify-between">
-                            <span>Sub Total:</span>
-                            <span id="subtotal">P0</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Discount:</span>
-                            <span>P0.00</span>
-                        </div>
-                        <div class="flex justify-between font-extrabold text-slate-900 text-sm pt-1">
-                            <span>Total:</span>
-                            <span id="total">P0</span>
-                        </div>
-                        <div class="flex justify-between items-center pt-1">
-                            <span>Cash:</span>
-                            <div class="flex items-center bg-[#dcd8d8] px-2 py-1 rounded border border-slate-300 font-bold text-xs w-28 justify-between">
-                                <span>P</span>
-                                <span id="cash-rendered">0</span>
-                            </div>
-                        </div>
+                    <div class="flex justify-center items-center gap-3 mt-2 w-full">
+                        <button onclick="updateQty('halo-1', -1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">-</button>
+                        <span id="qty-halo-1" class="font-extrabold text-slate-900 text-xs">0</span>
+                        <button onclick="updateQty('halo-1', 1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">+</button>
                     </div>
                 </div>
 
-                <!-- Cashier Keypad -->
-                <div class="mt-2">
-                    <div class="grid grid-cols-4 gap-1.5 text-xs font-bold">
-                        <button onclick="pressKey('1')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">1</button>
-                        <button onclick="pressKey('2')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">2</button>
-                        <button onclick="pressKey('3')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">3</button>
-                        <button onclick="clearCash()" class="py-2.5 rounded bg-[#6cb2eb] text-white shadow hover:opacity-90 active:scale-95 transition">Cancel</button>
-
-                        <button onclick="pressKey('4')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">4</button>
-                        <button onclick="pressKey('5')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">5</button>
-                        <button onclick="pressKey('6')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">6</button>
-                        <button onclick="deleteCash()" class="py-2.5 rounded bg-[#f66d9b] text-white shadow hover:opacity-90 active:scale-95 transition">Delete</button>
-
-                        <button onclick="pressKey('7')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">7</button>
-                        <button onclick="pressKey('8')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">8</button>
-                        <button onclick="pressKey('9')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">9</button>
-                        <button onclick="submitCheckout()" class="py-2.5 rounded bg-[#38c172] text-white shadow hover:opacity-90 active:scale-95 transition">Checkout</button>
-
-                        <button onclick="pressKey('0')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">0</button>
-                        <button onclick="pressKey('00')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">00</button>
-                        <button onclick="pressKey('.')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">.</button>
-                        <button onclick="pressKey('000')" class="py-2.5 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">000</button>
+                <!-- Halo-Halo Special Card -->
+                <div class="bg-[#e0dede] p-3 rounded-xl shadow border border-slate-300 text-center flex flex-col justify-between items-center">
+                    <div class="w-full flex flex-col items-center">
+                        <div class="w-20 h-20 mb-2 rounded-lg overflow-hidden bg-slate-200 border border-slate-300 flex items-center justify-center shrink-0">
+                            <img src="{{ asset('images/halo-halo1.webp') }}" alt="Halo-Halo Special" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80'">
+                        </div>
+                        <h3 class="font-extrabold text-slate-800 text-sm">Halo-Halo Special</h3>
+                        <p class="text-purple-800 font-extrabold text-xs my-0.5">P120.00</p>
+                    </div>
+                    <div class="flex justify-center items-center gap-3 mt-2 w-full">
+                        <button onclick="updateQty('halo-2', -1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">-</button>
+                        <span id="qty-halo-2" class="font-extrabold text-slate-900 text-xs">0</span>
+                        <button onclick="updateQty('halo-2', 1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">+</button>
                     </div>
                 </div>
-            </aside>
 
+                <!-- Mais Con Yelo Card -->
+                <div class="bg-[#e0dede] p-3 rounded-xl shadow border border-slate-300 text-center flex flex-col justify-between items-center">
+                    <div class="w-full flex flex-col items-center">
+                        <div class="w-20 h-20 mb-2 rounded-lg overflow-hidden bg-slate-200 border border-slate-300 flex items-center justify-center shrink-0">
+                            <img src="{{ asset('images/mais-con-yelo.png') }}" alt="Mais Con Yelo" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80'">
+                        </div>
+                        <h3 class="font-extrabold text-slate-800 text-sm">Mais Con Yelo</h3>
+                        <p class="text-purple-800 font-extrabold text-xs my-0.5">P90.00</p>
+                    </div>
+                    <div class="flex justify-center items-center gap-3 mt-2 w-full">
+                        <button onclick="updateQty('halo-3', -1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">-</button>
+                        <span id="qty-halo-3" class="font-extrabold text-slate-900 text-xs">0</span>
+                        <button onclick="updateQty('halo-3', 1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">+</button>
+                    </div>
+                </div>
+            </div>
         </main>
+
+        <!-- Cashier Panel -->
+        <aside class="w-full lg:w-80 bg-[#e0dede] p-3 lg:p-4 flex flex-col justify-between shadow-xl shrink-0 border-t lg:border-t-0 lg:border-l border-slate-300 h-full overflow-y-auto">
+            <div>
+                <select id="order-type-select" class="w-full p-2 rounded bg-[#dcd8d8] border border-slate-300 text-slate-800 font-bold text-xs mb-2 focus:outline-none">
+                    <option value="Take Out">Take Out</option>
+                    <option value="Dine-In">Dine In</option>
+                </select>
+
+                <input type="text" id="table-number-input" placeholder="Table Number" class="w-full p-2 rounded bg-[#dcd8d8] border border-slate-300 text-slate-700 font-medium text-xs mb-3 focus:outline-none">
+
+                <h2 class="font-extrabold text-slate-900 text-xs mb-1.5 border-b border-slate-300 pb-1">Order Details</h2>
+                
+                <div id="order-summary-list" class="space-y-1 text-xs text-slate-800 font-medium mb-3 min-h-[40px] max-h-[100px] overflow-y-auto">
+                    <p class="text-slate-400 italic text-center py-2">No items added yet</p>
+                </div>
+
+                <div class="space-y-1 text-xs text-slate-800 font-semibold border-t border-slate-300 pt-2 mb-2">
+                    <div class="flex justify-between">
+                        <span>Sub Total:</span>
+                        <span id="subtotal">P0.00</span>
+                    </div>
+
+                    <div class="flex justify-between items-center text-slate-700">
+                        <span>Discount:</span>
+                        <select id="discount-select" onchange="recalculateTotals()" class="px-1 py-0.5 bg-[#dcd8d8] border border-slate-300 rounded text-[11px] font-bold focus:outline-none">
+                            <option value="0">None (0%)</option>
+                            <option value="0.05">5%</option>
+                            <option value="0.10">10%</option>
+                            <option value="0.20">20% (Senior/PWD)</option>
+                        </select>
+                    </div>
+
+                    <div class="flex justify-between font-extrabold text-slate-900 text-xs pt-1 border-t border-slate-200">
+                        <span>Total:</span>
+                        <span id="total">P0.00</span>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-1">
+                        <span>Cash:</span>
+                        <div class="flex items-center bg-[#dcd8d8] px-2 py-0.5 rounded border border-slate-300 font-bold text-xs w-28 justify-between">
+                            <span>P</span>
+                            <span id="cash-rendered">0</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center font-bold text-emerald-700 bg-emerald-100/60 px-2 py-0.5 rounded border border-emerald-300 mt-1">
+                        <span>Change:</span>
+                        <span id="change-rendered">P0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Keypad -->
+            <div class="mt-1">
+                <div class="grid grid-cols-4 gap-1 text-xs font-bold">
+                    <button onclick="pressKey('1')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">1</button>
+                    <button onclick="pressKey('2')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">2</button>
+                    <button onclick="pressKey('3')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">3</button>
+                    <button onclick="clearOrder()" class="py-2 rounded bg-[#6cb2eb] text-white shadow hover:opacity-90 active:scale-95 transition">Cancel</button>
+
+                    <button onclick="pressKey('4')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">4</button>
+                    <button onclick="pressKey('5')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">5</button>
+                    <button onclick="pressKey('6')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">6</button>
+                    <button onclick="deleteCash()" class="py-2 rounded bg-[#f66d9b] text-white shadow hover:opacity-90 active:scale-95 transition">Delete</button>
+
+                    <button onclick="pressKey('7')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">7</button>
+                    <button onclick="pressKey('8')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">8</button>
+                    <button onclick="pressKey('9')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">9</button>
+                    <button onclick="submitCheckout()" class="py-2 rounded bg-[#38c172] text-white shadow hover:opacity-90 active:scale-95 transition">Checkout</button>
+
+                    <button onclick="pressKey('0')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">0</button>
+                    <button onclick="pressKey('00')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">00</button>
+                    <button onclick="pressKey('.')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">.</button>
+                    <button onclick="pressKey('000')" class="py-2 rounded bg-slate-200 text-slate-900 shadow hover:bg-slate-300 active:scale-95 transition">000</button>
+                </div>
+            </div>
+        </aside>
     </div>
 
     <script>
-        let quantities = {'halo-1': 0, 'halo-2': 0, 'halo-3': 0};
-        let rawCash = '';
+    let quantities = {'halo-1': 0, 'halo-2': 0, 'halo-3': 0};
+    let rawCash = '';
 
-        function updateQty(itemId, change) {
-            if (!quantities[itemId]) quantities[itemId] = 0;
-            quantities[itemId] = Math.max(0, quantities[itemId] + change);
-            document.getElementById(`qty-${itemId}`).innerText = quantities[itemId];
-            recalculateTotals();
+    const itemPrices = {'halo-1': 90, 'halo-2': 120, 'halo-3': 90};
+    const itemNames = {'halo-1': 'Halo-Halo', 'halo-2': 'Halo-Halo Special', 'halo-3': 'Mais Con Yelo'};
+
+    function switchCategory(catKey) {
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.className = 'category-btn text-slate-600 hover:text-slate-900 pb-1 border-b-2 border-transparent transition';
+        });
+        const activeBtn = document.getElementById(`cat-${catKey}`);
+        if(activeBtn) {
+            activeBtn.className = 'category-btn text-amber-600 border-b-2 border-amber-500 font-extrabold pb-1 transition';
         }
+    }
 
-        function recalculateTotals() {
-            const prices = {'halo-1': 90, 'halo-2': 120, 'halo-3': 90};
-            const names = {'halo-1': 'Halo-Halo', 'halo-2': 'Halo-Halo Special', 'halo-3': 'Mais Con Yelo'};
-            
-            let total = 0;
-            let summaryHtml = '';
+    function updateQty(itemId, change) {
+        if (!quantities[itemId]) quantities[itemId] = 0;
+        quantities[itemId] = Math.max(0, quantities[itemId] + change);
+        document.getElementById(`qty-${itemId}`).innerText = quantities[itemId];
+        recalculateTotals();
+    }
 
-            for (let id in quantities) {
-                if (quantities[id] > 0) {
-                    let itemTotal = quantities[id] * prices[id];
-                    total += itemTotal;
-                    summaryHtml += `<div class="flex justify-between"><span>${quantities[id]}x ${names[id]}</span><span>P${itemTotal}</span></div>`;
-                }
+    function recalculateTotals() {
+        let subtotal = 0;
+        let summaryHtml = '';
+        let itemCount = 0;
+
+        for (let id in quantities) {
+            if (quantities[id] > 0) {
+                let itemTotal = quantities[id] * itemPrices[id];
+                subtotal += itemTotal;
+                itemCount++;
+                summaryHtml += `<div class="flex justify-between py-0.5"><span>${quantities[id]}x ${itemNames[id]}</span><span>P${itemTotal.toFixed(2)}</span></div>`;
             }
-
-            document.getElementById('order-summary-list').innerHTML = summaryHtml;
-            document.getElementById('subtotal').innerText = `P${total}`;
-            document.getElementById('total').innerText = `P${total}`;
         }
 
-        function pressKey(key) {
-            if (key === '.' && rawCash.includes('.')) return;
-            rawCash += key;
-            document.getElementById('cash-rendered').innerText = rawCash || '0';
+        const summaryList = document.getElementById('order-summary-list');
+        summaryList.innerHTML = itemCount === 0 ? `<p class="text-slate-400 italic text-center py-2">No items added yet</p>` : summaryHtml;
+
+        let discountRate = parseFloat(document.getElementById('discount-select').value) || 0;
+        let grandTotal = subtotal * (1 - discountRate);
+
+        document.getElementById('subtotal').innerText = `P${subtotal.toFixed(2)}`;
+        document.getElementById('total').innerText = `P${grandTotal.toFixed(2)}`;
+
+        calculateChange(grandTotal);
+    }
+
+    function pressKey(key) {
+        if (key === '.' && rawCash.includes('.')) return;
+        rawCash += key;
+        updateCashDisplay();
+    }
+
+    function deleteCash() {
+        rawCash = rawCash.slice(0, -1);
+        updateCashDisplay();
+    }
+
+    function updateCashDisplay() {
+        document.getElementById('cash-rendered').innerText = rawCash || '0';
+        recalculateTotals();
+    }
+
+    function calculateChange(grandTotal) {
+        let cash = parseFloat(rawCash) || 0;
+        let changeElement = document.getElementById('change-rendered');
+
+        if (cash >= grandTotal && grandTotal > 0) {
+            let change = cash - grandTotal;
+            changeElement.innerText = `P${change.toFixed(2)}`;
+            changeElement.className = 'font-bold text-emerald-700';
+        } else if (cash < grandTotal && grandTotal > 0 && cash > 0) {
+            changeElement.innerText = 'Insufficient';
+            changeElement.className = 'font-bold text-red-600';
+        } else {
+            changeElement.innerText = 'P0.00';
+            changeElement.className = 'font-bold text-emerald-700';
+        }
+    }
+
+    function clearOrder() {
+        rawCash = '';
+        for (let id in quantities) {
+            quantities[id] = 0;
+            let elem = document.getElementById(`qty-${id}`);
+            if (elem) elem.innerText = '0';
+        }
+        document.getElementById('discount-select').value = '0';
+        updateCashDisplay();
+    }
+
+    function submitCheckout() {
+        let subtotal = 0;
+        let itemsToSubmit = [];
+
+        for (let id in quantities) {
+            if (quantities[id] > 0) {
+                let itemTotal = quantities[id] * itemPrices[id];
+                subtotal += itemTotal;
+                itemsToSubmit.push({
+                    name: itemNames[id],
+                    quantity: quantities[id],
+                    price: itemPrices[id],
+                    prep_time_seconds: 180
+                });
+            }
         }
 
-        function deleteCash() {
-            rawCash = rawCash.slice(0, -1);
-            document.getElementById('cash-rendered').innerText = rawCash || '0';
+        if (itemsToSubmit.length === 0) {
+            alert('Please add at least one item before checking out!');
+            return;
         }
 
-        function clearCash() {
-            rawCash = '';
-            document.getElementById('cash-rendered').innerText = '0';
+        let discountRate = parseFloat(document.getElementById('discount-select').value) || 0;
+        let grandTotal = subtotal * (1 - discountRate);
+        let cash = parseFloat(rawCash) || 0;
+
+        if (cash < grandTotal) {
+            alert(`Insufficient Cash!\n\nTotal: P${grandTotal.toFixed(2)}\nCash Rendered: P${cash.toFixed(2)}`);
+            return;
         }
 
-        function submitCheckout() {
-            alert('Checkout processed successfully!');
-        }
+        let change = cash - grandTotal;
+
+        const payload = {
+            order_type: document.getElementById('order-type-select').value,
+            table_number: document.getElementById('table-number-input').value,
+            subtotal: subtotal,
+            discount: subtotal * discountRate,
+            total: grandTotal,
+            cash: cash,
+            change: change,
+            items: itemsToSubmit
+        };
+
+        fetch("/checkout/store", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Checkout processed successfully!\n\nOrder ${data.order_number}\nTotal: P${grandTotal.toFixed(2)}\nCash: P${cash.toFixed(2)}\nChange: P${change.toFixed(2)}`);
+                clearOrder();
+            } else {
+                alert('Database Error while saving order.');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Server connection failed.');
+        });
+    }
     </script>
 </body>
 </html>

@@ -16,47 +16,55 @@ class PosController extends Controller
         return view('pos.menu');
     }
 
-    // Save Order to MySQL
+    // Save Order to MySQL (pos_db)
     public function storeOrder(Request $request)
     {
         $validated = $request->validate([
-            'order_type' => 'required|in:Dine-In,Take Out',
-            'items' => 'required|array',
-            'subtotal' => 'required|numeric',
-            'discount' => 'numeric',
-            'total' => 'required|numeric',
-            'cash' => 'required|numeric',
+            'order_type'   => 'required|in:Dine-In,Take Out',
+            'table_number' => 'nullable|string',
+            'items'        => 'required|array',
+            'subtotal'     => 'required|numeric',
+            'discount'     => 'nullable|numeric',
+            'total'        => 'required|numeric',
+            'cash'         => 'required|numeric',
+            'change'       => 'nullable|numeric',
         ]);
 
         $latestOrder = Order::latest()->first();
         $nextNum = $latestOrder ? ($latestOrder->id + 1) : 1;
-        $orderNumber = '#' . str_pad($nextNum, 4, '0', STR_PAD_LEFT); 
+        $orderNumber = '#' . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
 
         $order = Order::create([
             'order_number' => $orderNumber,
-            'order_type' => $validated['order_type'],
-            'status' => 'Pending',
-            'subtotal' => $validated['subtotal'],
-            'discount' => $validated['discount'] ?? 0,
-            'total' => $validated['total'],
-            'cash_tendered' => $validated['cash'],
-            'arrival_time' => Carbon::now(), // Ta timestamp
+            'order_type'   => $validated['order_type'],
+            'table_number' => $validated['table_number'] ?? null,
+            'status'       => 'Pending',
+            'subtotal'     => $validated['subtotal'],
+            'discount'     => $validated['discount'] ?? 0,
+            'total'        => $validated['total'],
+            'cash_rendered'=> $validated['cash'],
+            'change_amount'=> $validated['change'] ?? ($validated['cash'] - $validated['total']),
+            'arrival_time' => Carbon::now(),
         ]);
 
         foreach ($validated['items'] as $item) {
             OrderItem::create([
-                'order_id' => $order->id,
-                'item_name' => $item['name'],
-                'quantity' => $item['quantity'],
-                'price' => $item['price'],
+                'order_id'                 => $order->id,
+                'item_name'                => $item['name'],
+                'quantity'                 => $item['quantity'],
+                'price'                    => $item['price'],
                 'estimated_prep_time_seconds' => $item['prep_time_seconds'] ?? 180,
             ]);
         }
 
-        return response()->json(['success' => true, 'order_number' => $orderNumber]);
+        return response()->json([
+            'success'      => true, 
+            'order_number' => $orderNumber,
+            'change'       => $order->change_amount
+        ]);
     }
 
-    // Kitchen Live Display View sorted by AA-SPT[cite: 1, 2]
+    // Kitchen Live Display View sorted by AA-SPT
     public function kitchenView()
     {
         $pendingOrders = AaSptService::getPrioritizedOrders();
@@ -72,9 +80,9 @@ class PosController extends Controller
         $status = $request->status;
 
         if ($status === 'In-Preparation' && !$order->preparation_start_time) {
-            $order->preparation_start_time = Carbon::now(); // Ts timestamp
+            $order->preparation_start_time = Carbon::now();
         } elseif ($status === 'Completed') {
-            $order->completion_time = Carbon::now(); // Tc timestamp
+            $order->completion_time = Carbon::now();
         }
 
         $order->status = $status;
@@ -87,11 +95,11 @@ class PosController extends Controller
     public function dashboardView()
     {
         $today = Carbon::today();
-        
-        $pendingCount = Order::where('status', 'Pending')->count();
+
+        $pendingCount  = Order::where('status', 'Pending')->count();
         $finishedCount = Order::where('status', 'Completed')->whereDate('created_at', $today)->count();
-        $totalToday = Order::whereDate('created_at', $today)->count();
-        $totalMonth = Order::whereMonth('created_at', Carbon::now()->month)->count();
+        $totalToday    = Order::whereDate('created_at', $today)->count();
+        $totalMonth    = Order::whereMonth('created_at', Carbon::now()->month)->count();
 
         return view('pos.dashboard', compact('pendingCount', 'finishedCount', 'totalToday', 'totalMonth'));
     }

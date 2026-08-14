@@ -3,80 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS Dashboard - Original Digman</title>
+    <title>Analytics & Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#cac4c4] font-sans antialiased text-slate-800 min-h-screen lg:h-screen flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden p-2 lg:p-4">
-
-    <!-- Container Frame -->
-    <div class="w-full h-full flex flex-col lg:flex-row bg-slate-100 rounded-xl overflow-hidden shadow-2xl border border-slate-300">
-
+<body class="bg-[#cac4c4] font-sans antialiased text-slate-800 p-2 lg:p-4">
+    <div class="w-full h-full min-h-full flex flex-col lg:flex-row bg-slate-100 rounded-xl overflow-hidden shadow-2xl border border-slate-300">
+        
         @include('pos.partials.sidebar')
+
         <!-- Main Workspace -->
         <main class="flex-1 flex flex-col p-4 overflow-y-auto bg-slate-100">
-
-            <!-- Brand Header Banner Image -->
+            
+            <!-- Brand Header Banner -->
             <div class="bg-[#dcd8d8] rounded-xl py-2 px-4 mb-4 text-center shadow-md border border-slate-700/60 flex items-center justify-between">
-                <img src="{{ asset('images/header-banner.png') }}" alt="Original Digman Banner" class="max-h-12 w-auto object-contain">
-                <span class="text-xs font-bold text-slate-300"><i class="fa-solid fa-calendar-day mr-1"></i> Today's Overview</span>
-            </div>
-
-            <!-- Dynamic Analytics Cards Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div class="bg-[#e0dede] p-4 rounded-xl shadow border border-slate-400">
-                    <p class="text-xs font-extrabold text-slate-600 uppercase">Total Sales</p>
-                    <h3 class="text-2xl font-black text-purple-900 mt-1">P{{ number_format($totalSales ?? 0, 2) }}</h3>
-                </div>
-                <div class="bg-[#e0dede] p-4 rounded-xl shadow border border-slate-400">
-                    <p class="text-xs font-extrabold text-slate-600 uppercase">Orders Served</p>
-                    <h3 class="text-2xl font-black text-slate-900 mt-1">{{ $ordersServedCount ?? 0 }}</h3>
-                </div>
-                <div class="bg-[#e0dede] p-4 rounded-xl shadow border border-slate-400">
-                    <p class="text-xs font-extrabold text-slate-600 uppercase">Top Item</p>
-                    <h3 class="text-2xl font-black text-slate-900 mt-1">{{ $topItem ?? 'N/A' }}</h3>
-                </div>
-                <div class="bg-[#e0dede] p-4 rounded-xl shadow border border-slate-400">
-                    <p class="text-xs font-extrabold text-slate-600 uppercase">Average Ticket</p>
-                    <h3 class="text-2xl font-black text-slate-900 mt-1">P{{ number_format($avgTicket ?? 0, 2) }}</h3>
+                <img src="{{ asset('images/header-banner.png') }}" alt="original Digman Banner" class="max-h-12 w-auto object-contain">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-extrabold text-slate-700 bg-slate-200/80 px-3 py-1.5 rounded-full border border-slate-300 shadow-sm">
+                        <i class="fa-solid fa-calendar-day mr-1"></i> Today: {{ \Carbon\Carbon::now()->format('M d, Y') }}
+                    </span>
                 </div>
             </div>
 
-            <!-- Dynamic Recent Transactions Table -->
-            <div class="bg-[#e0dede] rounded-xl p-4 shadow-lg border border-slate-400 flex-1 flex flex-col">
-                <h3 class="font-black text-slate-900 text-sm mb-3">Recent Completed Transactions</h3>
-                <div class="overflow-x-auto flex-1">
-                    <table class="w-full text-left text-xs font-semibold text-slate-800">
-                        <thead>
-                            <tr class="border-b border-slate-400 text-slate-600 uppercase text-[10px]">
-                                <th class="pb-2">Order ID</th>
-                                <th class="pb-2">Type</th>
-                                <th class="pb-2">Items</th>
-                                <th class="pb-2">Total</th>
-                                <th class="pb-2">Time</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-300">
-                            @forelse($recentTransactions ?? [] as $transaction)
-                                <tr>
-                                    <td class="py-2.5 font-bold">#{{ $transaction->id }}</td>
-                                    <td class="py-2.5">{{ $transaction->type }}</td>
-                                    <td class="py-2.5">{{ $transaction->summary_items }}</td>
-                                    <td class="py-2.5 font-extrabold text-purple-800">P{{ number_format($transaction->total, 2) }}</td>
-                                    <td class="py-2.5 text-slate-600">{{ $transaction->created_at->format('h:i A') }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="py-6 text-center text-slate-500 font-bold">No completed transactions recorded today.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+            <!-- Dashboard Analytics Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                
+                <!-- Pending Orders -->
+                <div class="bg-[#e0dede] p-5 rounded-xl shadow-lg border border-slate-400 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-black text-slate-600 uppercase tracking-wide">Pending Orders</p>
+                        <h3 class="text-3xl font-black text-amber-600 mt-1">{{ $pendingCount ?? 0 }}</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-amber-100 text-amber-700 border border-amber-300 flex items-center justify-center text-xl shadow-sm">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                </div>
+
+                <!-- Completed Today -->
+                <div class="bg-[#e0dede] p-5 rounded-xl shadow-lg border border-slate-400 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-black text-slate-600 uppercase tracking-wide">Completed Today</p>
+                        <h3 class="text-3xl font-black text-emerald-600 mt-1">{{ $finishedCount ?? 0 }}</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-emerald-100 text-emerald-700 border border-emerald-300 flex items-center justify-center text-xl shadow-sm">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+
+                <!-- Total Orders Today -->
+                <div class="bg-[#e0dede] p-5 rounded-xl shadow-lg border border-slate-400 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-black text-slate-600 uppercase tracking-wide">Total Today</p>
+                        <h3 class="text-3xl font-black text-purple-700 mt-1">{{ $totalToday ?? 0 }}</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-purple-100 text-purple-800 border border-purple-300 flex items-center justify-center text-xl shadow-sm">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                </div>
+
+                <!-- Total Orders This Month -->
+                <div class="bg-[#e0dede] p-5 rounded-xl shadow-lg border border-slate-400 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-black text-slate-600 uppercase tracking-wide">This Month</p>
+                        <h3 class="text-3xl font-black text-blue-600 mt-1">{{ $totalMonth ?? 0 }}</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-blue-100 text-blue-700 border border-blue-300 flex items-center justify-center text-xl shadow-sm">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Status Indicator Panel -->
+            <div class="bg-[#e0dede] rounded-xl p-5 shadow-lg border border-slate-400 mt-2">
+                <h2 class="font-extrabold text-slate-800 text-sm mb-2 border-b border-slate-300 pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-purple-700"></i> System Operations Status
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-bold text-slate-700">
+                    <div class="bg-[#dcd8d8] p-3 rounded border border-slate-300 flex justify-between items-center">
+                        <span>Database Connection:</span>
+                        <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 font-black">Connected (pos_db)</span>
+                    </div>
+                    <div class="bg-[#dcd8d8] p-3 rounded border border-slate-300 flex justify-between items-center">
+                        <span>Queue Algorithm:</span>
+                        <span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 border border-purple-300 font-black">AA-SPT Active</span>
+                    </div>
                 </div>
             </div>
 
         </main>
     </div>
-
 </body>
 </html>

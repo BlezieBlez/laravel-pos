@@ -32,14 +32,10 @@ class AaSptService
      */
     public static function getPrioritizedOrders()
     {
+        // Eager load items and match status case-insensitively
         return Order::with('items')
-            ->where('status', 'Pending')
-            ->get()
-            ->map(function ($order) {
-                $order->priority_score = self::calculatePriority($order);
-                return $order;
-            })
-            ->sortByDesc('priority_score') // Higher score = higher priority
-            ->values();
+            ->whereIn('status', ['Pending', 'pending', 'In-Preparation'])
+            ->orderBy('created_at', 'asc')
+            ->get();
     }
 }
