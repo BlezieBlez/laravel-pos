@@ -1,41 +1,39 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Order;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class AaSptService
 {
     /**
-     * Calculate AA-SPT priority score for an order
+     * Calculates AA-SPT priority score for pending orders.
+     * Score = Total Prep Time (s) - (Alpha * Wait Time in Seconds)
+     * Lower Score = Higher Priority in Kitchen Queue.
      */
-    public static function calculatePriority(Order $order): float
+    public static function getPrioritizedOrders(float $alpha = 0.5): Collection
     {
-        // Total estimated prep time (Ts) in seconds
-        $ts = $order->items->sum(function ($item) {
-            return $item->estimated_prep_time_seconds * $item->quantity;
-        });
+        $now = Carbon::now();
 
-        if ($ts <= 0) {
-            $ts = 60; // fallback default
-        }
-
-        // Live waiting time (Wq) in seconds
-        $wq = Carbon::parse($order->arrival_time)->diffInSeconds(Carbon::now());
-
-        // Priority Score = (Wq + Ts) / Ts
-        return ($wq + $ts) / $ts;
-    }
-
-    /**
-     * Get orders sorted by highest AA-SPT priority
-     */
-    public static function getPrioritizedOrders()
-    {
-        // Eager load items and match status case-insensitively
-        return Order::with('items')
-            ->whereIn('status', ['Pending', 'pending', 'In-Preparation'])
-            ->orderBy('created_at', 'asc')
+        $orders = Order::with('items')
+            ->where('status', 'Pending')
             ->get();
+
+        return $orders->sortBy(function ($order) use ($now, $alpha) {
+            $totalPrepTimeSeconds = $order->items->sum('prep_time_seconds');
+
+            $arrivalTime = Carbon::parse($order->arrival_time ?? $order->created_at);
+            $waitTimeSeconds = $now->diffInSeconds($arrivalTime);
+
+            $score = $totalPrepTimeSeconds - ($alpha * $waitTimeSeconds);
+
+            $order->total_prep_seconds = $totalPrepTimeSeconds;
+            $order->wait_time_seconds = $waitTimeSeconds;
+            $order->priority_score = round($score, 2);
+
+            return $score;
+        })->values();
     }
 }

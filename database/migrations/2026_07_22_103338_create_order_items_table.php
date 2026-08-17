@@ -12,10 +12,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->string('item_name');
-            $table->decimal('price', 10, 2);
-            $table->integer('quantity');
-            $table->integer('prep_time_seconds')->default(0);
-            $table->timestamps();
+            $table->integer('prep_time_seconds'); // Prep duration in seconds
+            $table->string('status')->default('Pending'); // Pending, Preparing, Completed
+            $table->timestamps(); // Generates created_at (used as order arrival/age timestamp)
         });
     }
 
