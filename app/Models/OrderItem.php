@@ -14,7 +14,7 @@ class OrderItem extends Model
         'item_name',
         'quantity',
         'price',
-        'total_price',
+        'prep_time_seconds',
     ];
 
     public function order()

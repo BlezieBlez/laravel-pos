@@ -10,16 +10,18 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('order_number')->unique(); 
+            $table->string('order_number')->unique();
             $table->enum('order_type', ['Dine-In', 'Take Out']);
+            $table->string('table_number')->nullable();
             $table->enum('status', ['Pending', 'In-Preparation', 'Completed'])->default('Pending');
             $table->decimal('subtotal', 10, 2);
             $table->decimal('discount', 10, 2)->default(0.00);
             $table->decimal('total', 10, 2);
             $table->decimal('cash_tendered', 10, 2);
-            $table->timestamp('arrival_time'); // Ta
-            $table->timestamp('preparation_start_time')->nullable(); // Ts
-            $table->timestamp('completion_time')->nullable(); // Tc
+            $table->decimal('change_amount', 10, 2)->default(0.00);
+            $table->timestamp('arrival_time');
+            $table->timestamp('preparation_start_time')->nullable();
+            $table->timestamp('completion_time')->nullable();
             $table->timestamps();
         });
 

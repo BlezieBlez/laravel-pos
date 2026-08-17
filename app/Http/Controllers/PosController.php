@@ -35,25 +35,25 @@ class PosController extends Controller
         $orderNumber = '#' . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
 
         $order = Order::create([
-            'order_number' => $orderNumber,
-            'order_type'   => $validated['order_type'],
-            'table_number' => $validated['table_number'] ?? null,
-            'status'       => 'Pending',
-            'subtotal'     => $validated['subtotal'],
-            'discount'     => $validated['discount'] ?? 0,
-            'total'        => $validated['total'],
-            'cash_rendered'=> $validated['cash'],
-            'change_amount'=> $validated['change'] ?? ($validated['cash'] - $validated['total']),
-            'arrival_time' => Carbon::now(),
+            'order_number'   => $orderNumber,
+            'order_type'     => $validated['order_type'],
+            'table_number'   => $validated['table_number'] ?? null,
+            'status'         => 'Pending',
+            'subtotal'       => $validated['subtotal'],
+            'discount'       => $validated['discount'] ?? 0,
+            'total'          => $validated['total'],
+            'cash_tendered'  => $validated['cash'],
+            'change_amount'  => $validated['change'] ?? ($validated['cash'] - $validated['total']),
+            'arrival_time'   => Carbon::now(),
         ]);
 
         foreach ($validated['items'] as $item) {
             OrderItem::create([
-                'order_id'                 => $order->id,
-                'item_name'                => $item['name'],
-                'quantity'                 => $item['quantity'],
-                'price'                    => $item['price'],
-                'estimated_prep_time_seconds' => $item['prep_time_seconds'] ?? 180,
+                'order_id'           => $order->id,
+                'item_name'          => $item['name'],
+                'quantity'           => $item['quantity'],
+                'price'              => $item['price'],
+                'prep_time_seconds'  => $item['prep_time_seconds'] ?? 180,
             ]);
         }
 
@@ -101,6 +101,41 @@ class PosController extends Controller
         $totalToday    = Order::whereDate('created_at', $today)->count();
         $totalMonth    = Order::whereMonth('created_at', Carbon::now()->month)->count();
 
-        return view('pos.dashboard', compact('pendingCount', 'finishedCount', 'totalToday', 'totalMonth'));
+        $completedByDate = Order::where('status', 'Completed')
+            ->whereBetween('created_at', [
+                Carbon::now()->subDays(29)->startOfDay(),
+                Carbon::now()->endOfDay(),
+            ])
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
+            ->groupBy('date')
+            ->pluck('total', 'date')
+            ->toArray();
+
+        $dailyChart = [];
+        for ($i = 29; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i)->startOfDay();
+            $dateKey = $date->format('Y-m-d');
+            $dailyChart[] = [
+                'label' => $date->format('j'),
+                'count' => (int) ($completedByDate[$dateKey] ?? 0),
+            ];
+        }
+
+        $weeklyChart = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i)->startOfDay();
+            $dateKey = $date->format('Y-m-d');
+            $weeklyChart[] = [
+                'label' => $date->shortDayName,
+                'count' => (int) ($completedByDate[$dateKey] ?? 0),
+            ];
+        }
+
+        $todayChart = [
+            ['label' => 'AM', 'count' => Order::where('status', 'Completed')->whereDate('created_at', $today)->whereTime('created_at', '>=', '00:00:00')->whereTime('created_at', '<', '12:00:00')->count()],
+            ['label' => 'PM', 'count' => Order::where('status', 'Completed')->whereDate('created_at', $today)->whereTime('created_at', '>=', '12:00:00')->count()],
+        ];
+
+        return view('pos.dashboard', compact('pendingCount', 'finishedCount', 'totalToday', 'totalMonth', 'dailyChart', 'weeklyChart', 'todayChart'));
     }
 }

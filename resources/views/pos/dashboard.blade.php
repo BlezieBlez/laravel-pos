@@ -74,8 +74,72 @@
 
             </div>
 
+            <!-- Completion Trend Chart -->
+            <div class="bg-[#e0dede] rounded-xl p-5 shadow-lg border border-slate-400 mt-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h2 class="font-extrabold text-slate-800 text-2xl">Completed Orders</h2>
+                        <p class="text-xs text-slate-500 mt-1" id="chart-subtitle">30-day completion trend</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-500">
+                        <button type="button" class="period-btn px-3 py-1.5 rounded-md border border-slate-300 bg-purple-200 text-purple-900 shadow-sm transition hover:bg-purple-300" data-period="monthly">Monthly</button>
+                        <button type="button" class="period-btn px-3 py-1.5 rounded-md border border-transparent text-slate-500 hover:text-purple-900 transition" data-period="weekly">Weekly</button>
+                    </div>
+                </div>
+
+                <div class="h-64 flex items-end gap-3 px-2 pt-4 pb-2" id="chart-container">
+                        @foreach ($dailyChart as $entry)
+                            <div class="flex-1 flex flex-col items-center justify-end h-full chart-bar" data-period="monthly">
+                                <div class="w-full flex justify-center items-end h-44">
+                                    <div class="w-3 rounded-t-md bg-gradient-to-t from-purple-700 to-purple-400 shadow-sm" style="height: {{ max(12, ($entry['count'] / max(1, max(array_column($dailyChart, 'count')))) * 100) }}%"></div>
+                                </div>
+                                <span class="mt-2 text-[10px] font-bold text-slate-500">{{ $entry['label'] }}</span>
+                            </div>
+                        @endforeach
+                        @foreach ($weeklyChart as $entry)
+                            <div class="flex-1 flex flex-col items-center justify-end h-full chart-bar hidden" data-period="weekly">
+                                <div class="w-full flex justify-center items-end h-44">
+                                    <div class="w-6 rounded-t-md bg-gradient-to-t from-purple-700 to-purple-400 shadow-sm" style="height: {{ max(12, ($entry['count'] / max(1, max(array_column($weeklyChart, 'count')))) * 100) }}%"></div>
+                                </div>
+                                <span class="mt-2 text-[10px] font-bold text-slate-500">{{ $entry['label'] }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+            </div>
+
+            <script>
+                document.querySelectorAll('.period-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const period = this.getAttribute('data-period');
+                        
+                        // Update active button styling
+                        document.querySelectorAll('.period-btn').forEach(b => {
+                            b.classList.remove('bg-purple-200', 'text-purple-900', 'shadow-sm');
+                            b.classList.add('text-slate-500');
+                        });
+                        this.classList.add('bg-purple-200', 'text-purple-900', 'shadow-sm');
+                        this.classList.remove('text-slate-500');
+                        
+                        // Toggle chart bars
+                        document.querySelectorAll('.chart-bar').forEach(bar => {
+                            if (bar.getAttribute('data-period') === period) {
+                                bar.classList.remove('hidden');
+                            } else {
+                                bar.classList.add('hidden');
+                            }
+                        });
+                        
+                        // Update subtitle
+                        const subtitle = period === 'monthly' ? '30-day completion trend' : '7-day completion trend';
+                        document.getElementById('chart-subtitle').textContent = subtitle;
+                    });
+                });
+            </script>
+
             <!-- Status Indicator Panel -->
-            <div class="bg-[#e0dede] rounded-xl p-5 shadow-lg border border-slate-400 mt-2">
+            <div class="bg-[#e0dede] rounded-xl p-5 shadow-lg border border-slate-400 mt-6">
                 <h2 class="font-extrabold text-slate-800 text-sm mb-2 border-b border-slate-300 pb-2 flex items-center gap-2">
                     <i class="fa-solid fa-chart-line text-purple-700"></i> System Operations Status
                 </h2>
@@ -93,5 +157,8 @@
 
         </main>
     </div>
+
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </body>
 </html>

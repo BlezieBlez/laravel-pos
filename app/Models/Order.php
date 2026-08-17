@@ -10,14 +10,18 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
+        'order_number',
         'order_type',
         'table_number',
-        'subtotal',
-        'discount_rate',
-        'grand_total',
-        'cash_rendered',
-        'change_amount',
         'status',
+        'subtotal',
+        'discount',
+        'total',
+        'cash_tendered',
+        'change_amount',
+        'arrival_time',
+        'preparation_start_time',
+        'completion_time',
     ];
 
     public function items()

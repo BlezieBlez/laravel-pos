@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>POS Menu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,70 +28,22 @@
 
             <!-- Category Navigation Bar -->
             <div class="flex items-center gap-8 border-b border-slate-300 mb-3 px-2 pb-1 shrink-0 font-bold text-xs">
-                <button onclick="switchCategory('silog')" id="cat-silog" class="category-btn text-slate-600 hover:text-slate-900 pb-1 border-b-2 border-transparent transition">
+                <button onclick="switchCategory('silog')" id="cat-silog" class="category-btn text-amber-600 border-b-2 border-amber-500 font-extrabold pb-1 transition">
                     Silog Dishes
                 </button>
                 <button onclick="switchCategory('noodle')" id="cat-noodle" class="category-btn text-slate-600 hover:text-slate-900 pb-1 border-b-2 border-transparent transition">
                     Noodle Dishes
                 </button>
-                <button onclick="switchCategory('single')" id="cat-single" class="category-btn text-slate-600 hover:text-slate-900 pb-1 border-b-2 border-transparent transition">
-                    Single Dishes
+                <button onclick="switchCategory('snacks')" id="cat-snacks" class="category-btn text-slate-600 hover:text-slate-900 pb-1 border-b-2 border-transparent transition">
+                    Snacks
                 </button>
-                <button onclick="switchCategory('dessert')" id="cat-dessert" class="category-btn text-amber-600 border-b-2 border-amber-500 font-extrabold pb-1 transition">
+                <button onclick="switchCategory('dessert')" id="cat-dessert" class="category-btn text-slate-600 hover:text-slate-900 pb-1 border-b-2 border-transparent transition">
                     Dessert
                 </button>
             </div>
 
             <!-- Menu Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 overflow-y-auto">
-                <!-- Halo-Halo Card -->
-                <div class="bg-[#e0dede] p-3 rounded-xl shadow border border-slate-300 text-center flex flex-col justify-between items-center">
-                    <div class="w-full flex flex-col items-center">
-                        <div class="w-20 h-20 mb-2 rounded-lg overflow-hidden bg-slate-200 border border-slate-300 flex items-center justify-center shrink-0">
-                            <img src="{{ asset('images/halo-halo1.webp') }}" alt="Halo-Halo" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80'">
-                        </div>
-                        <h3 class="font-extrabold text-slate-800 text-sm">Halo-Halo</h3>
-                        <p class="text-purple-800 font-extrabold text-xs my-0.5">P90.00</p>
-                    </div>
-                    <div class="flex justify-center items-center gap-3 mt-2 w-full">
-                        <button onclick="updateQty('halo-1', -1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">-</button>
-                        <span id="qty-halo-1" class="font-extrabold text-slate-900 text-xs">0</span>
-                        <button onclick="updateQty('halo-1', 1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">+</button>
-                    </div>
-                </div>
-
-                <!-- Halo-Halo Special Card -->
-                <div class="bg-[#e0dede] p-3 rounded-xl shadow border border-slate-300 text-center flex flex-col justify-between items-center">
-                    <div class="w-full flex flex-col items-center">
-                        <div class="w-20 h-20 mb-2 rounded-lg overflow-hidden bg-slate-200 border border-slate-300 flex items-center justify-center shrink-0">
-                            <img src="{{ asset('images/halo-halo1.webp') }}" alt="Halo-Halo Special" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80'">
-                        </div>
-                        <h3 class="font-extrabold text-slate-800 text-sm">Halo-Halo Special</h3>
-                        <p class="text-purple-800 font-extrabold text-xs my-0.5">P120.00</p>
-                    </div>
-                    <div class="flex justify-center items-center gap-3 mt-2 w-full">
-                        <button onclick="updateQty('halo-2', -1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">-</button>
-                        <span id="qty-halo-2" class="font-extrabold text-slate-900 text-xs">0</span>
-                        <button onclick="updateQty('halo-2', 1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">+</button>
-                    </div>
-                </div>
-
-                <!-- Mais Con Yelo Card -->
-                <div class="bg-[#e0dede] p-3 rounded-xl shadow border border-slate-300 text-center flex flex-col justify-between items-center">
-                    <div class="w-full flex flex-col items-center">
-                        <div class="w-20 h-20 mb-2 rounded-lg overflow-hidden bg-slate-200 border border-slate-300 flex items-center justify-center shrink-0">
-                            <img src="{{ asset('images/mais-con-yelo.png') }}" alt="Mais Con Yelo" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80'">
-                        </div>
-                        <h3 class="font-extrabold text-slate-800 text-sm">Mais Con Yelo</h3>
-                        <p class="text-purple-800 font-extrabold text-xs my-0.5">P90.00</p>
-                    </div>
-                    <div class="flex justify-center items-center gap-3 mt-2 w-full">
-                        <button onclick="updateQty('halo-3', -1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">-</button>
-                        <span id="qty-halo-3" class="font-extrabold text-slate-900 text-xs">0</span>
-                        <button onclick="updateQty('halo-3', 1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">+</button>
-                    </div>
-                </div>
-            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 overflow-y-auto" id="menu-grid"></div>
         </main>
 
         <!-- Cashier Panel -->
@@ -173,13 +126,72 @@
     </div>
 
     <script>
-    let quantities = {'halo-1': 0, 'halo-2': 0, 'halo-3': 0};
+    const menuItems = {
+        silog: [
+            { id: 'silog-1', name: 'Tapsilog', price: 125 },
+            { id: 'silog-2', name: 'Porksilog', price: 125 },
+            { id: 'silog-3', name: 'Tapsi', price: 110 },
+            { id: 'silog-4', name: 'Porksi', price: 110 }
+        ],
+        noodle: [
+            { id: 'noodle-1', name: 'Pancit', price: 70 },
+            { id: 'noodle-2', name: 'Spaghetti', price: 70 },
+            { id: 'noodle-3', name: 'Palabok', price: 70 },
+            { id: 'noodle-4', name: 'Chicken Mami', price: 70 }
+        ],
+        snacks: [
+            { id: 'snacks-1', name: 'Siopao', price: 35 },
+            { id: 'snacks-2', name: 'Empanada', price: 55 },
+            { id: 'snacks-3', name: 'Tahong Chips', price: 65 },
+            { id: 'snacks-4', name: 'BBQ', price: 35 },
+            { id: 'snacks-5', name: 'Hotdog', price: 20 }
+        ],
+        dessert: [
+            { id: 'dessert-1', name: 'Halo-Halo Special (With Ube Ice Cream)', price: 130 },
+            { id: 'dessert-2', name: 'Halo-Halo', price: 120 },
+            { id: 'dessert-3', name: 'Mais Con Yelo', price: 100 }
+        ]
+    };
+
+    let quantities = {};
+    let itemPrices = {};
+    let itemNames = {};
+    let currentCategory = 'silog';
     let rawCash = '';
 
-    const itemPrices = {'halo-1': 90, 'halo-2': 120, 'halo-3': 90};
-    const itemNames = {'halo-1': 'Halo-Halo', 'halo-2': 'Halo-Halo Special', 'halo-3': 'Mais Con Yelo'};
+    // Initialize items
+    Object.keys(menuItems).forEach(cat => {
+        menuItems[cat].forEach(item => {
+            quantities[item.id] = 0;
+            itemPrices[item.id] = item.price;
+            itemNames[item.id] = item.name;
+        });
+    });
+
+    function renderMenu(category) {
+        const grid = document.getElementById('menu-grid');
+        grid.innerHTML = '';
+        
+        menuItems[category].forEach(item => {
+            const html = `
+                <div class="bg-[#e0dede] p-3 rounded-xl shadow border border-slate-300 text-center flex flex-col justify-between items-center">
+                    <div class="w-full flex flex-col items-center">
+                        <h3 class="font-extrabold text-slate-800 text-sm">${item.name}</h3>
+                        <p class="text-purple-800 font-extrabold text-xs my-0.5">P${item.price.toFixed(2)}</p>
+                    </div>
+                    <div class="flex justify-center items-center gap-3 mt-2 w-full">
+                        <button onclick="updateQty('${item.id}', -1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">-</button>
+                        <span id="qty-${item.id}" class="font-extrabold text-slate-900 text-xs">0</span>
+                        <button onclick="updateQty('${item.id}', 1)" class="w-8 h-8 rounded bg-slate-200 font-bold hover:bg-slate-300 shadow active:scale-95 transition text-xs">+</button>
+                    </div>
+                </div>
+            `;
+            grid.innerHTML += html;
+        });
+    }
 
     function switchCategory(catKey) {
+        currentCategory = catKey;
         document.querySelectorAll('.category-btn').forEach(btn => {
             btn.className = 'category-btn text-slate-600 hover:text-slate-900 pb-1 border-b-2 border-transparent transition';
         });
@@ -187,12 +199,14 @@
         if(activeBtn) {
             activeBtn.className = 'category-btn text-amber-600 border-b-2 border-amber-500 font-extrabold pb-1 transition';
         }
+        renderMenu(catKey);
     }
 
     function updateQty(itemId, change) {
         if (!quantities[itemId]) quantities[itemId] = 0;
         quantities[itemId] = Math.max(0, quantities[itemId] + change);
-        document.getElementById(`qty-${itemId}`).innerText = quantities[itemId];
+        const elem = document.getElementById(`qty-${itemId}`);
+        if (elem) elem.innerText = quantities[itemId];
         recalculateTotals();
     }
 
@@ -259,7 +273,7 @@
         rawCash = '';
         for (let id in quantities) {
             quantities[id] = 0;
-            let elem = document.getElementById(`qty-${id}`);
+            const elem = document.getElementById(`qty-${id}`);
             if (elem) elem.innerText = '0';
         }
         document.getElementById('discount-select').value = '0';
@@ -312,13 +326,32 @@
 
         fetch("/checkout/store", {
             method: "POST",
+            credentials: "same-origin",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? "{{ csrf_token() }}"
             },
             body: JSON.stringify(payload)
         })
-        .then(res => res.json())
+        .then(async res => {
+            const text = await res.text();
+
+            if (!res.ok) {
+                let message = `HTTP ${res.status}`;
+
+                try {
+                    const json = JSON.parse(text);
+                    if (json && json.message) message = json.message;
+                    else if (json && json.errors) message = Object.values(json.errors).flat().join('\n');
+                } catch (e) {
+                    if (text) message = text;
+                }
+
+                throw new Error(message);
+            }
+
+            return text ? JSON.parse(text) : {};
+        })
         .then(data => {
             if (data.success) {
                 alert(`Checkout processed successfully!\n\nOrder ${data.order_number}\nTotal: P${grandTotal.toFixed(2)}\nCash: P${cash.toFixed(2)}\nChange: P${change.toFixed(2)}`);
@@ -329,9 +362,14 @@
         })
         .catch(err => {
             console.error(err);
-            alert('Server connection failed.');
+            alert(`Checkout failed:\n\n${err.message || 'Server connection failed.'}`);
         });
     }
+
+    // Initialize menu on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        renderMenu('silog');
+    });
     </script>
 </body>
 </html>
