@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Kitchen Display System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +22,7 @@
                 <div class="flex items-center gap-2">
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">
                         <span class="w-2 h-2 rounded-full bg-amber-500 mr-2 animate-pulse"></span>
-                        {{ count($pendingOrders ?? []) }} Pending Orders
+                        {{ count($pendingOrders ?? []) }} Active Kitchen Orders
                     </span>
                 </div>
             </div>
@@ -36,8 +37,8 @@
                                     <h3 class="font-black text-slate-900 text-base">Order {{ $order->order_number ?? '#'.$order->id }}</h3>
                                     <p class="text-xs text-slate-600 font-semibold">{{ $order->order_type }} • Table {{ $order->table_number ?? '--' }}</p>
                                 </div>
-                                <span class="class=px-2.5 py-1 rounded bg-amber-100 text-amber-800 font-extrabold text-xs border border-amber-300">
-                                    {{ ucfirst($order->status) }}
+                                <span class="px-2.5 py-1 rounded font-extrabold text-xs border {{ $order->status === 'In-Preparation' ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-slate-200 text-slate-800 border-slate-400' }}">
+                                    {{ $order->status === 'In-Preparation' ? 'In Preparation' : ucfirst($order->status) }}
                                 </span>
                             </div>
 
@@ -50,21 +51,24 @@
                             </ul>
                         </div>
 
-                        <div>
-                            @if($order->status !== 'Completed')
-                                <button onclick="updateOrderStatus({{ $order->id }}, 'Completed')" class="w-full py-2 bg-[#38c172] hover:bg-emerald-600 text-white font-extrabold text-xs rounded shadow transition active:scale-95 flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-check"></i> Mark as Completed
+                        <!-- Dynamic Action Button -->
+                        <div class="mt-4 flex gap-2">
+                            @if($order->status === 'In-Preparation')
+                                <button onclick="updateOrderStatus({{ $order->id }}, 'Completed')" 
+                                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg transition shadow">
+                                    <i class="fa-solid fa-check mr-2"></i>Mark as Completed
                                 </button>
                             @else
-                                <button disabled class="w-full py-2 bg-slate-400 text-slate-200 font-bold text-xs rounded cursor-not-allowed">
-                                    Served
+                                <button onclick="updateOrderStatus({{ $order->id }}, 'In-Preparation')" 
+                                        class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg transition shadow">
+                                    <i class="fa-solid fa-fire mr-2"></i>Start Preparing
                                 </button>
                             @endif
                         </div>
                     </div>
                 @empty
                     <div class="col-span-full text-center py-16 text-slate-500 font-extrabold text-sm">
-                        No active pending orders in the kitchen.
+                        No active orders in the kitchen.
                     </div>
                 @endforelse
             </div>
@@ -73,29 +77,37 @@
 
     <script>
     function updateOrderStatus(orderId, status) {
-        fetch(`/kitchen/status/${orderId}`, {
+        const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+        if (!token) {
+            alert('CSRF token missing. Please refresh the page.');
+            return;
+        }
+
+        fetch(`/kitchen/order/${orderId}/status`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                "Accept": "application/json",
+                "X-CSRF-TOKEN": token
             },
             body: JSON.stringify({ status: status })
         })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
+        .then(async res => {
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.success) {
                 location.reload();
             } else {
-                alert('Failed to update order status.');
+                console.error('Server response error:', data);
+                alert('Failed to update status: ' + (data.message || `HTTP ${res.status}`));
             }
         })
         .catch(err => {
-            console.error(err);
-            alert('Error updating order status.');
+            console.error('Network/Request Error:', err);
+            alert('Error connecting to server. Check console for details.');
         });
     }
 
-    // Auto-refresh the kitchen view every 15 seconds for live orders
     setInterval(() => {
         location.reload();
     }, 15000);

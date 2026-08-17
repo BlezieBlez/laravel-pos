@@ -9,6 +9,8 @@ class Order extends Model
 {
     use HasFactory;
 
+    protected $table = 'orders';
+
     protected $fillable = [
         'order_number',
         'order_type',
@@ -24,8 +26,11 @@ class Order extends Model
         'completion_time',
     ];
 
+    /**
+     * Relationship with OrderItem model.
+     */
     public function items()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class, 'order_id');
     }
 }

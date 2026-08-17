@@ -291,8 +291,7 @@
                 itemsToSubmit.push({
                     name: itemNames[id],
                     quantity: quantities[id],
-                    price: itemPrices[id],
-                    prep_time_seconds: 180
+                    price: itemPrices[id]
                 });
             }
         }
@@ -324,7 +323,7 @@
             items: itemsToSubmit
         };
 
-        fetch("/checkout/store", {
+        fetch("{{ route('order.checkout') }}", {
             method: "POST",
             credentials: "same-origin",
             headers: {

@@ -18,126 +18,207 @@ class PosController extends Controller
     }
 
     // Save Order to MySQL (pos_db)
-    // Save Order to MySQL (pos_db)
     public function storeOrder(Request $request)
     {
-        $validated = $request->validate([
-            'order_type'   => 'required|in:Dine-In,Take Out',
-            'table_number' => 'nullable|string',
-            'items'        => 'required|array',
-            'subtotal'     => 'required|numeric',
-            'discount'     => 'nullable|numeric',
-            'total'        => 'required|numeric',
-            'cash'         => 'required|numeric',
-            'change'       => 'nullable|numeric',
-        ]);
-
-        return DB::transaction(function () use ($validated) {
-            $latestOrder = Order::latest()->first();
-            $nextNum = $latestOrder ? ($latestOrder->id + 1) : 1;
-            $orderNumber = '#' . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
-
-            $order = Order::create([
-                'order_number'  => $orderNumber,
-                'order_type'    => $validated['order_type'],
-                'table_number'  => $validated['table_number'] ?? null,
-                'status'        => 'Pending',
-                'subtotal'      => $validated['subtotal'],
-                'discount'      => $validated['discount'] ?? 0,
-                'total'         => $validated['total'],
-                'cash_tendered' => $validated['cash'],
-                'change_amount' => $validated['change'] ?? ($validated['cash'] - $validated['total']),
-                'arrival_time'  => Carbon::now(),
+        try {
+            $validated = $request->validate([
+                'order_type'   => 'required|in:Dine-In,Take Out',
+                'table_number' => 'nullable|string',
+                'items'        => 'required|array|min:1',
+                'items.*.name' => 'nullable|string',
+                'items.*.item_name' => 'nullable|string',
+                'items.*.quantity'  => 'required|integer|min:1',
+                'items.*.price'     => 'required|numeric',
+                'subtotal'     => 'required|numeric',
+                'discount'     => 'nullable|numeric',
+                'total'        => 'required|numeric',
+                'cash'         => 'required|numeric',
+                'change'       => 'nullable|numeric',
             ]);
 
-            $menuPrepTimes = [
-                // Desserts
-                'Mais Con Yelo'      => 120,
-                'Halo-Halo'          => 124,
-                'Halo-Halo Speci'    => 160,
-                'Halo-Halo Special'  => 160,
+            return DB::transaction(function () use ($validated) {
+                $latestOrder = Order::latest()->first();
+                $nextNum = $latestOrder ? ($latestOrder->id + 1) : 1;
+                $orderNumber = '#' . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
 
-                // Snacks
-                'Siopao'             => 60,
-                'Tahong Chips'       => 60,
-                'Empanada'           => 180,
-                'Hotdog'             => 360,
-                'BBQ'                => 750,
-
-                // Noodle Dishes
-                'Spaghetti'          => 390,
-                'Chicken Mami'       => 390,
-                'Palabok'            => 480,
-                'Pancit'             => 600,
-
-                // Silog Dishes
-                'Tapsi'              => 1020,
-                'Tapsilog'           => 1110,
-                'Porksi'             => 1080,
-                'Porksilog'          => 1350,
-            ];
-
-            foreach ($validated['items'] as $item) {
-                $prepTime = $item['prep_time_seconds'] 
-                    ?? ($menuPrepTimes[$item['name']] ?? 180);
-
-                OrderItem::create([
-                    'order_id'          => $order->id,
-                    'item_name'         => $item['name'],
-                    'quantity'          => $item['quantity'],
-                    'price'             => $item['price'],
-                    'prep_time_seconds' => $prepTime,
+                $order = Order::create([
+                    'order_number'  => $orderNumber,
+                    'order_type'    => $validated['order_type'],
+                    'table_number'  => $validated['table_number'] ?? null,
+                    'status'        => 'Pending',
+                    'subtotal'      => $validated['subtotal'],
+                    'discount'      => $validated['discount'] ?? 0,
+                    'total'         => $validated['total'],
+                    'cash_tendered' => $validated['cash'],
+                    'change_amount' => $validated['change'] ?? ($validated['cash'] - $validated['total']),
+                    'arrival_time'  => Carbon::now(),
                 ]);
-            }
 
+                $menuPrepTimes = [
+                    // Desserts
+                    'Mais Con Yelo'                      => 120,
+                    'Halo-Halo'                          => 124,
+                    'Halo-Halo Speci'                    => 160,
+                    'Halo-Halo Special'                  => 160,
+                    'Halo-Halo Special (With Ube Ice Cream)' => 160,
+
+                    // Snacks
+                    'Siopao'                             => 60,
+                    'Tahong Chips'                       => 60,
+                    'Empanada'                           => 180,
+                    'Hotdog'                             => 360,
+                    'BBQ'                                => 750,
+
+                    // Noodle Dishes
+                    'Spaghetti'                          => 390,
+                    'Chicken Mami'                       => 390,
+                    'Palabok'                            => 480,
+                    'Pancit'                             => 600,
+
+                    // Silog Dishes
+                    'Tapsi'                              => 1020,
+                    'Tapsilog'                           => 1110,
+                    'Porksi'                             => 1080,
+                    'Porksilog'                          => 1350,
+                ];
+
+                foreach ($validated['items'] as $item) {
+
+                    $rawName = trim(
+                        $item['name'] ??
+                        $item['item_name'] ??
+                        ''
+                    );
+
+                    /*
+                    * Preparation time is controlled by the server.
+                    * Do NOT accept prep time from JavaScript.
+                    */
+                    $prepTime = $menuPrepTimes[$rawName] ?? 180;
+
+                    OrderItem::create([
+                        'order_id'          => $order->id,
+                        'item_name'         => $rawName,
+                        'quantity'          => $item['quantity'],
+                        'price'             => $item['price'],
+                        'prep_time_seconds' => $prepTime,
+                    ]);
+                }
+
+                return response()->json([
+                    'success'      => true, 
+                    'order_number' => $orderNumber,
+                    'change'       => $order->change_amount,
+                    'message'      => 'Order saved successfully!'
+                ], 200);
+            });
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
-                'success'      => true, 
-                'order_number' => $orderNumber,
-                'change'       => $order->change_amount
-            ]);
-        });
+                'success' => false,
+                'message' => 'Validation Error: ' . implode(', ', \Illuminate\Support\Arr::flatten($e->errors()))
+            ], 422);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Server Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function checkout(Request $request)
+    {
+        return $this->storeOrder($request);
     }
 
     // Kitchen Live Display View sorted by AA-SPT
     public function kitchenView()
     {
-        // Fetches orders sorted by aging-adjusted score
-        $pendingOrders = AaSptService::getPrioritizedOrders(0.5); 
-        $completedOrders = Order::where('status', 'Completed')->latest()->take(10)->get();
+        /*
+        * Orders already being prepared should stay visible,
+        * but should NOT participate in AA-SPT ranking.
+        */
+        $preparingOrders = Order::with('items')
+            ->where('status', 'In-Preparation')
+            ->orderBy('preparation_start_time', 'asc')
+            ->get();
 
-        return view('pos.kitchen', compact('pendingOrders', 'completedOrders'));
+        /*
+        * Only Pending orders are ranked using AA-SPT.
+        */
+        $waitingOrders = AaSptService::getPrioritizedOrders(0.5);
+
+        /*
+        * Display:
+        *
+        * 1. In-Preparation orders first
+        * 2. Pending orders in AA-SPT priority order
+        */
+        $pendingOrders = $preparingOrders
+            ->concat($waitingOrders)
+            ->values();
+
+        return view(
+            'pos.kitchen',
+            compact('pendingOrders')
+        );
     }
 
     // API Endpoint for AJAX/Polling Live Kitchen Refresh
     public function getLiveQueue()
     {
-        $pendingOrders = AaSptService::getPrioritizedOrders(0.5);
+        $preparingOrders = Order::with('items')
+            ->where('status', 'In-Preparation')
+            ->orderBy('preparation_start_time', 'asc')
+            ->get();
+
+        $waitingOrders = AaSptService::getPrioritizedOrders(0.5);
+
+        $orders = $preparingOrders
+            ->concat($waitingOrders)
+            ->values();
 
         return response()->json([
             'success' => true,
-            'orders'  => $pendingOrders
+            'orders'  => $orders
         ]);
     }
 
-    // Update Status (Complete / In-Prep)
+    // Update Status (In-Preparation / Completed)
     public function updateStatus(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
-        $status = $request->status;
+        $validated = $request->validate([
+            'status' => 'required|in:In-Preparation,Completed',
+        ]);
 
-        if ($status === 'In-Preparation' && !$order->preparation_start_time) {
-            $order->preparation_start_time = Carbon::now();
-        } elseif ($status === 'Completed') {
+        $order = Order::findOrFail($id);
+        $newStatus = $validated['status'];
+
+        if ($newStatus === 'In-Preparation') {
+
+            $order->status = 'In-Preparation';
+
+            $order->preparation_start_time =
+                $order->preparation_start_time ?? Carbon::now();
+
+            $order->completion_time = null;
+
+        } else {
+
+            $order->status = 'Completed';
             $order->completion_time = Carbon::now();
         }
 
-        $order->status = $status;
         $order->save();
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'status'  => $order->status,
+        ]);
     }
 
-    // Analytics Dashboard Screen
+    // Analytics Dashboard View
     public function dashboardView()
     {
         $today = Carbon::today();

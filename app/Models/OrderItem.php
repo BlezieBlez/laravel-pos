@@ -9,6 +9,8 @@ class OrderItem extends Model
 {
     use HasFactory;
 
+    protected $table = 'order_items';
+
     protected $fillable = [
         'order_id',
         'item_name',
@@ -17,8 +19,11 @@ class OrderItem extends Model
         'prep_time_seconds',
     ];
 
+    /**
+     * Relationship back to the Order model.
+     */
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id');
     }
 }
