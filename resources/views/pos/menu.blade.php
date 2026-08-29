@@ -124,6 +124,51 @@
             </div>
         </aside>
     </div>
+    <!-- RECEIPT MODAL -->
+    <div id="receipt-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+        <div class="bg-white rounded-lg shadow-xl p-5 w-80">
+
+            <div id="receipt-print-area"
+                class="text-center font-mono text-xs">
+
+                <h2 class="font-extrabold text-lg">
+                    DIGMAN POS
+                </h2>
+
+                <p>Official Receipt</p>
+
+                <hr class="my-2">
+
+                <div id="receipt-content"></div>
+
+                <hr class="my-2">
+
+                <p class="font-bold">
+                    THANK YOU!
+                </p>
+
+            </div>
+
+
+            <div class="flex gap-2 mt-4">
+
+                <button onclick="printReceipt()"
+                class="flex-1 bg-green-500 text-white py-2 rounded">
+                    PRINT
+                </button>
+
+
+                <button onclick="closeReceipt()"
+                class="flex-1 bg-gray-400 text-white py-2 rounded">
+                    CLOSE
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <script>
     const menuItems = {
@@ -352,23 +397,186 @@
             return text ? JSON.parse(text) : {};
         })
         .then(data => {
-            if (data.success) {
-                alert(`Checkout processed successfully!\n\nOrder ${data.order_number}\nTotal: P${grandTotal.toFixed(2)}\nCash: P${cash.toFixed(2)}\nChange: P${change.toFixed(2)}`);
+
+            if(data.success){
+
+                showReceipt(data.receipt);
+
                 clearOrder();
-            } else {
-                alert('Database Error while saving order.');
+
             }
+
+            else {
+
+                alert('Database Error while saving order.');
+
+            }
+
         })
-        .catch(err => {
-            console.error(err);
-            alert(`Checkout failed:\n\n${err.message || 'Server connection failed.'}`);
+    }
+
+    function showReceipt(receipt){
+
+        let itemsHTML = "";
+
+        receipt.items.forEach(item => {
+
+            itemsHTML += `
+            <div class="flex justify-between">
+                <span>
+                    ${item.quantity}x ${item.name}
+                </span>
+
+                <span>
+                    P${(item.price * item.quantity).toFixed(2)}
+                </span>
+            </div>
+            `;
+
         });
+
+
+        document.getElementById("receipt-content").innerHTML = `
+
+            <p>
+            Order #: ${receipt.order_number}
+            </p>
+
+            <p>
+            ${receipt.order_type}
+            ${receipt.table_number ? " - Table "+receipt.table_number : ""}
+            </p>
+
+
+            <hr class="my-2">
+
+
+            ${itemsHTML}
+
+
+            <hr class="my-2">
+
+
+            <div class="flex justify-between">
+                <span>Subtotal</span>
+                <span>P${receipt.subtotal.toFixed(2)}</span>
+            </div>
+
+
+            <div class="flex justify-between">
+                <span>Discount</span>
+                <span>P${receipt.discount.toFixed(2)}</span>
+            </div>
+
+
+            <div class="flex justify-between font-bold">
+                <span>TOTAL</span>
+                <span>P${receipt.total.toFixed(2)}</span>
+            </div>
+
+
+            <br>
+
+
+            <div class="flex justify-between">
+                <span>Cash</span>
+                <span>P${receipt.cash.toFixed(2)}</span>
+            </div>
+
+
+            <div class="flex justify-between">
+                <span>Change</span>
+                <span>P${receipt.change.toFixed(2)}</span>
+            </div>
+
+        `;
+
+
+        document
+        .getElementById("receipt-modal")
+        .classList.remove("hidden");
+
+    }
+
+
+
+    function closeReceipt(){
+
+        document
+        .getElementById("receipt-modal")
+        .classList.add("hidden");
+
+    }
+
+
+
+    function printReceipt(){
+
+        let printContents =
+        document.getElementById(
+            "receipt-print-area"
+        ).innerHTML;
+
+
+        let win =
+        window.open(
+            '',
+            '',
+            'width=300,height=600'
+        );
+
+
+        win.document.write(`
+
+        <html>
+
+        <head>
+
+        <style>
+
+        body{
+            width:58mm;
+            font-family:monospace;
+            font-size:12px;
+        }
+
+        .center{
+            text-align:center;
+        }
+
+        </style>
+
+
+        </head>
+
+
+        <body>
+
+        ${printContents}
+
+
+        </body>
+
+        </html>
+
+        `);
+
+
+        win.document.close();
+
+        win.focus();
+
+        win.print();
+
+        win.close();
+
     }
 
     // Initialize menu on page load
     document.addEventListener('DOMContentLoaded', () => {
         renderMenu('silog');
     });
+    
     </script>
 </body>
 </html>
