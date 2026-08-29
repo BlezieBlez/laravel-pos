@@ -37,8 +37,8 @@ class PosController extends Controller
             ]);
 
             return DB::transaction(function () use ($validated) {
-                $latestOrder = Order::latest()->first();
-                $nextNum = $latestOrder ? ($latestOrder->id + 1) : 1;
+                $lastOrderNumber = Order::max('id');
+                $nextNum = $lastOrderNumber ? $lastOrderNumber + 1 : 1;
                 $orderNumber = '#' . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
 
                 $order = Order::create([

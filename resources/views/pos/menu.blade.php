@@ -133,7 +133,7 @@
                 class="text-center font-mono text-xs">
 
                 <h2 class="font-extrabold text-lg">
-                    DIGMAN POS
+                    DIGMAN ORIGINAL HALO-HALO & HOME MADE SIOPAO
                 </h2>
 
                 <p>Official Receipt</p>
@@ -203,6 +203,8 @@
     let itemNames = {};
     let currentCategory = 'silog';
     let rawCash = '';
+
+    let currentReceipt = null;
 
     // Initialize items
     Object.keys(menuItems).forEach(cat => {
@@ -398,14 +400,25 @@
         })
         .then(data => {
 
+            console.log(data);
+
             if(data.success){
 
-                showReceipt(data.receipt);
+                if(data.receipt){
+
+                    showReceipt(data.receipt);
+
+                } else {
+
+                    alert(
+                        `Checkout processed successfully!\n\nOrder ${data.order_number}`
+                    );
+
+                }
 
                 clearOrder();
 
             }
-
             else {
 
                 alert('Database Error while saving order.');
@@ -416,6 +429,8 @@
     }
 
     function showReceipt(receipt){
+
+        currentReceipt = receipt;
 
         let itemsHTML = "";
 
@@ -512,37 +527,65 @@
 
     function printReceipt(){
 
-        let printContents =
-        document.getElementById(
+        // SEND TO FUN PRINT (future Android/tablet printing)
+        if (window.Android && currentReceipt) {
+
+            sendToPrinter(currentReceipt);
+
+            return;
+
+        }
+
+
+        // NORMAL WINDOWS TEST PRINT
+        let printContents = document.getElementById(
             "receipt-print-area"
         ).innerHTML;
 
 
-        let win =
-        window.open(
+        let printWindow = window.open(
             '',
-            '',
-            'width=300,height=600'
+            'PRINT_RECEIPT',
+            'width=400,height=600'
         );
 
 
-        win.document.write(`
-
+        printWindow.document.write(`
         <html>
 
         <head>
 
+        <title>Receipt</title>
+
         <style>
 
-        body{
-            width:58mm;
-            font-family:monospace;
-            font-size:12px;
-        }
+            @page {
+                size: 58mm auto;
+                margin: 5mm;
+            }
 
-        .center{
-            text-align:center;
-        }
+
+            body {
+
+                width:58mm;
+                font-family: "Courier New", monospace;
+                font-size:12px;
+                color:#000;
+
+            }
+
+
+            .flex {
+                display:flex;
+                justify-content:space-between;
+            }
+
+
+            hr {
+                border:0;
+                border-top:1px dashed #000;
+            }
+
 
         </style>
 
@@ -557,18 +600,21 @@
 
         </body>
 
-        </html>
 
+        </html>
         `);
 
 
-        win.document.close();
+        printWindow.document.close();
 
-        win.focus();
 
-        win.print();
+        setTimeout(function(){
 
-        win.close();
+            printWindow.focus();
+
+            printWindow.print();
+
+        },500);
 
     }
 
