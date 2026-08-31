@@ -234,17 +234,28 @@ class PosController extends Controller
     {
         $today = Carbon::today();
 
-        $pendingCount  = Order::where('status', 'Pending')->count();
-        $finishedCount = Order::where('status', 'Completed')->whereDate('created_at', $today)->count();
-        $totalToday    = Order::whereDate('created_at', $today)->count();
-        $totalMonth    = Order::whereMonth('created_at', Carbon::now()->month)->count();
+        $pendingCount = Order::where('status', 'Pending')->count();
+
+        $finishedCount = Order::where('status', 'Completed')
+            ->whereDate('completion_time', $today)
+            ->count();
+
+        $totalToday = Order::where('status', 'Completed')
+            ->whereDate('completion_time', $today)
+            ->count();
+
+        $totalMonth = Order::whereNotNull('created_at')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
 
         $completedByDate = Order::where('status', 'Completed')
-            ->whereBetween('created_at', [
+            ->whereNotNull('completion_time')
+            ->whereBetween('completion_time', [
                 Carbon::now()->subDays(29)->startOfDay(),
                 Carbon::now()->endOfDay(),
             ])
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
+            ->selectRaw('DATE(completion_time) as date, COUNT(*) as total')
             ->groupBy('date')
             ->pluck('total', 'date')
             ->toArray();
