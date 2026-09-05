@@ -124,51 +124,6 @@
             </div>
         </aside>
     </div>
-    <!-- RECEIPT MODAL -->
-    <div id="receipt-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-
-        <div class="bg-white rounded-lg shadow-xl p-5 w-80">
-
-            <div id="receipt-print-area"
-                class="text-center font-mono text-xs">
-
-                <h2 class="font-extrabold text-lg">
-                    DIGMAN ORIGINAL HALO-HALO & HOME MADE SIOPAO
-                </h2>
-
-                <p>Official Receipt</p>
-
-                <hr class="my-2">
-
-                <div id="receipt-content"></div>
-
-                <hr class="my-2">
-
-                <p class="font-bold">
-                    THANK YOU!
-                </p>
-
-            </div>
-
-
-            <div class="flex gap-2 mt-4">
-
-                <button onclick="printReceipt()"
-                class="flex-1 bg-green-500 text-white py-2 rounded">
-                    PRINT
-                </button>
-
-
-                <button onclick="closeReceipt()"
-                class="flex-1 bg-gray-400 text-white py-2 rounded">
-                    CLOSE
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
 
     <script>
     const menuItems = {
@@ -203,8 +158,6 @@
     let itemNames = {};
     let currentCategory = 'silog';
     let rawCash = '';
-
-    let currentReceipt = null;
 
     // Initialize items
     Object.keys(menuItems).forEach(cat => {
@@ -404,17 +357,9 @@
 
             if(data.success){
 
-                if(data.receipt){
-
-                    showReceipt(data.receipt);
-
-                } else {
-
-                    alert(
-                        `Checkout processed successfully!\n\nOrder ${data.order_number}`
-                    );
-
-                }
+                alert(
+                    `Checkout processed successfully!\n\nOrder ${data.order_number}`
+                );
 
                 clearOrder();
 
@@ -426,196 +371,6 @@
             }
 
         })
-    }
-
-    function showReceipt(receipt){
-
-        currentReceipt = receipt;
-
-        let itemsHTML = "";
-
-        receipt.items.forEach(item => {
-
-            itemsHTML += `
-            <div class="flex justify-between">
-                <span>
-                    ${item.quantity}x ${item.name}
-                </span>
-
-                <span>
-                    P${(item.price * item.quantity).toFixed(2)}
-                </span>
-            </div>
-            `;
-
-        });
-
-
-        document.getElementById("receipt-content").innerHTML = `
-
-            <p>
-            Order #: ${receipt.order_number}
-            </p>
-
-            <p>
-            ${receipt.order_type}
-            ${receipt.table_number ? " - Table "+receipt.table_number : ""}
-            </p>
-
-
-            <hr class="my-2">
-
-
-            ${itemsHTML}
-
-
-            <hr class="my-2">
-
-
-            <div class="flex justify-between">
-                <span>Subtotal</span>
-                <span>P${receipt.subtotal.toFixed(2)}</span>
-            </div>
-
-
-            <div class="flex justify-between">
-                <span>Discount</span>
-                <span>P${receipt.discount.toFixed(2)}</span>
-            </div>
-
-
-            <div class="flex justify-between font-bold">
-                <span>TOTAL</span>
-                <span>P${receipt.total.toFixed(2)}</span>
-            </div>
-
-
-            <br>
-
-
-            <div class="flex justify-between">
-                <span>Cash</span>
-                <span>P${receipt.cash.toFixed(2)}</span>
-            </div>
-
-
-            <div class="flex justify-between">
-                <span>Change</span>
-                <span>P${receipt.change.toFixed(2)}</span>
-            </div>
-
-        `;
-
-
-        document
-        .getElementById("receipt-modal")
-        .classList.remove("hidden");
-
-    }
-
-
-
-    function closeReceipt(){
-
-        document
-        .getElementById("receipt-modal")
-        .classList.add("hidden");
-
-    }
-
-
-
-    function printReceipt(){
-
-        // SEND TO FUN PRINT (future Android/tablet printing)
-        if (window.Android && currentReceipt) {
-
-            sendToPrinter(currentReceipt);
-
-            return;
-
-        }
-
-
-        // NORMAL WINDOWS TEST PRINT
-        let printContents = document.getElementById(
-            "receipt-print-area"
-        ).innerHTML;
-
-
-        let printWindow = window.open(
-            '',
-            'PRINT_RECEIPT',
-            'width=400,height=600'
-        );
-
-
-        printWindow.document.write(`
-        <html>
-
-        <head>
-
-        <title>Receipt</title>
-
-        <style>
-
-            @page {
-                size: 58mm auto;
-                margin: 5mm;
-            }
-
-
-            body {
-
-                width:58mm;
-                font-family: "Courier New", monospace;
-                font-size:12px;
-                color:#000;
-
-            }
-
-
-            .flex {
-                display:flex;
-                justify-content:space-between;
-            }
-
-
-            hr {
-                border:0;
-                border-top:1px dashed #000;
-            }
-
-
-        </style>
-
-
-        </head>
-
-
-        <body>
-
-        ${printContents}
-
-
-        </body>
-
-
-        </html>
-        `);
-
-
-        printWindow.document.close();
-
-
-        setTimeout(function(){
-
-            printWindow.focus();
-
-            printWindow.print();
-
-        },500);
-
     }
 
     // Initialize menu on page load

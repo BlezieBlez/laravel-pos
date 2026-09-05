@@ -109,17 +109,6 @@ class PosController extends Controller
                     'success'      => true,
                     'order_number' => $orderNumber,
                     'change'       => $order->change_amount,
-                    'receipt' => [
-                        'order_number' => $orderNumber,
-                        'order_type'   => $order->order_type,
-                        'table_number' => $order->table_number,
-                        'subtotal'     => $order->subtotal,
-                        'discount'     => $order->discount,
-                        'total'        => $order->total,
-                        'cash'         => $order->cash_tendered,
-                        'change'       => $order->change_amount,
-                        'items'        => $validated['items']
-                    ],
                     'message' => 'Order saved successfully!'
                 ], 200);
             });
