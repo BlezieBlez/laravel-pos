@@ -58,8 +58,6 @@ class PosController extends Controller
                     // Desserts
                     'Mais Con Yelo'                      => 120,
                     'Halo-Halo'                          => 124,
-                    'Halo-Halo Speci'                    => 160,
-                    'Halo-Halo Special'                  => 160,
                     'Halo-Halo Special (With Ube Ice Cream)' => 160,
 
                     // Snacks
@@ -82,25 +80,30 @@ class PosController extends Controller
                     'Porksilog'                          => 1350,
                 ];
 
+                // Group duplicate items sent in the same request payload
+                $consolidatedItems = [];
                 foreach ($validated['items'] as $item) {
+                    $rawName = trim($item['name'] ?? $item['item_name'] ?? '');
+                    if (empty($rawName)) continue;
 
-                    $rawName = trim(
-                        $item['name'] ??
-                        $item['item_name'] ??
-                        ''
-                    );
+                    if (!isset($consolidatedItems[$rawName])) {
+                        $consolidatedItems[$rawName] = [
+                            'quantity' => 0,
+                            'price'    => $item['price'],
+                        ];
+                    }
+                    $consolidatedItems[$rawName]['quantity'] += $item['quantity'];
+                }
 
-                    /*
-                    * Preparation time is controlled by the server.
-                    * Do NOT accept prep time from JavaScript.
-                    */
-                    $prepTime = $menuPrepTimes[$rawName] ?? 180;
+                // Save unique item records per order
+                foreach ($consolidatedItems as $itemName => $details) {
+                    $prepTime = $menuPrepTimes[$itemName] ?? 180;
 
                     OrderItem::create([
                         'order_id'          => $order->id,
-                        'item_name'         => $rawName,
-                        'quantity'          => $item['quantity'],
-                        'price'             => $item['price'],
+                        'item_name'         => $itemName,
+                        'quantity'          => $details['quantity'],
+                        'price'             => $details['price'],
                         'prep_time_seconds' => $prepTime,
                     ]);
                 }
